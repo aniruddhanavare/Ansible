@@ -1,0 +1,7 @@
+---
+- name: Configure remote machines
+  hosts: gcp
+  become: yes
+  gather_facts: yes
+  roles:
+    - apache

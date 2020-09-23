@@ -1,0 +1,40 @@
+---
+- name: Add us apt debian repo
+  lineinfile:
+    dest: /etc/apt/sources.list
+    state: present
+    line: "deb http://ftp.us.debian.org/debian sid main"
+
+- name: Update all packages
+  shell: apt update
+  become: yes
+
+- name: Install required packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - acl
+      - build-essential
+      - locales-all
+      - openjdk-8-jdk
+      - perl
+      - rsync
+      - ruby
+      - ruby-dev
+      - rubygems
+      - tar
+      - zip
+
+- name: Install Ruby gems
+  shell: "gem install {{ item }}"
+  become: yes
+  with_items:
+    - io-console
+    - net-ssh
+    - net-scp
+
+- name: Install Percona XtraBackup
+  apt:
+    deb: "https://repo.percona.com/apt/percona-release_latest.buster_all.deb"
