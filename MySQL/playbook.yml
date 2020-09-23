@@ -1,9 +1,0 @@
----
-- name: Configure remote machines
-  hosts: gcp
-  become: yes
-  gather_facts: yes
-  vars_files:
-    - ./vars/tungsten_vars.yml
-  roles:
-    - prerequsites

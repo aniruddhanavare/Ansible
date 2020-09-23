@@ -1,3 +1,0 @@
----
-- name: Use tasks for RHEL
-  include_tasks: "redhat.yml"
