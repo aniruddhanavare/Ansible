@@ -4,6 +4,6 @@
   become: yes
   gather_facts: yes
   vars_files:
-    - ./vars/tungsten_vars.yml
+    - ./vars/mysql.yml
   roles:
-    - prerequsites
+    - mysql
