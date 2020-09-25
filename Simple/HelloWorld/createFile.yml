@@ -11,15 +11,12 @@
         username: "{{ vcenter_username }}"
         password: "{{ vcenter_password }}"
         datacenter: "{{ datacenter }}"
-        folder: "/{{datacenter}}/vm"
+        validate_certs: no
         vm_id: "{{ vm_name }}"
         vm_username: root
         vm_password: VMware1!
-        vm_shell: /bin/echo
-        vm_shell_args: " $var >> myFile "
-        vm_shell_env:
-          - "PATH=/bin"
-          - "VAR=test"
+        vm_shell: "/bin/echo"
+        vm_shell_args: "Hello > /tmp/hello.txt"
         vm_shell_cwd: "/tmp"
       delegate_to: localhost
       register: shell_command_output
