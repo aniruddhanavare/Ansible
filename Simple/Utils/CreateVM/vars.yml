@@ -1,0 +1,22 @@
+---
+- vcenter_server: 10.154.23.150
+- vcenter_user: administrator@vsphere.local
+- vcenter_pass: P@ssw0rd
+- datacenter: CloudMatrix
+- cluster: vRA-Extended
+- folder: Test
+- template: CentOS6.6
+- vm_name: mcmp-sept27-1
+- vm_username: root
+- vm_password: VMware1!
+- vm_memory: 1024
+- vm_cpus: 1
+- disk_size: 25
+
+- network_name: VM Network
+- network_ip: 10.155.124.112
+- network_netmask: 255.255.255.192
+- network_device_type: vmxnet3
+- network_domain: mcmpdomain
+- network_gateway: 10.155.124.65
+- network_dns_server: 10.154.23.131

@@ -1,0 +1,42 @@
+---
+- name: Create File
+  gather_facts: no
+  hosts: localhost
+  vars_files:
+    - vars.yml
+  tasks:
+
+    - name: Create a virtual machine from a template
+      community.vmware.vmware_guest:
+        hostname: "{{ vcenter_server }}"
+        username: "{{ vcenter_user }}"
+        password: "{{ vcenter_pass }}"
+        validate_certs: no
+        datacenter: "{{ datacenter }}"
+        cluster: "{{ cluster }}"
+        folder: "/{{ folder }}"
+        name: "{{ vm_name }}"
+        state: poweredon
+        template: "{{ template }}"
+        disk:
+        - size_gb: "{{ disk_size }}"
+          type: thin
+          autoselect_datastore: yes
+        hardware:
+          memory_mb: "{{ vm_memory }}"
+          num_cpus: "{{ vm_cpus }}"
+          scsi: paravirtual
+        networks:
+        - name: "{{ network_name }}"
+          ip: "{{ network_ip }}"
+          netmask: "{{ network_netmask }}"
+          device_type: "{{ network_device_type }}"
+          domain: "{{ network_domain }}"
+          gateway: "{{ network_gateway }}"
+          dns_servers:
+          - "{{ network_dns_server }}"
+          - 8.8.8.8          
+        wait_for_ip_address: yes
+        wait_for_ip_address_timeout: 60
+      delegate_to: localhost
+      register: deploy
