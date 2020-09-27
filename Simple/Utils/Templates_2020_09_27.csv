@@ -1,0 +1,22 @@
+"Name","Compliant","Total Snapshots","Allocated Size","Last Analysis Time","Cloud"
+CentOS6.6,,0,17179869184,,false
+Centos6.6-7.3-5GB-WithAgent,,0,5368709120,,false
+Centos6.6-7.5WA5GBFinal,,0,5368709120,,false
+CentOS7.6,,0,214748364800,,false
+CentOS76-7.6,,0,5368709120,,false
+centos7-74-WA template,,0,5368709120,,false
+CentOS7-7.5,,0,5368709120,,false
+CentOS7-Lamp,,0,53687091200,,false
+CentOS7-vanilla,,0,107374182400,,false
+CentOS7-Wildfly,,0,53687091200,,false
+PhotonOS-Template,,0,16777216000,,false
+Proxyserver,,0,42949672960,,false
+RHEL7.5,,0,5368709120,,false
+rhel7.5-vra7.6,,0,5368709120,,false
+RHEL_Franklin,,0,5368709120,,false
+Ubuntu 16.04,,0,107374182400,,false
+Ubuntu18.04,,0,322122547200,,false
+ubuntuICAM,,0,107374182400,,false
+Win10,,0,34359738368,,false
+WindowsTemplate,,0,42949672960,,false
+WindowsTemplatevra73,,0,42949672960,,false
