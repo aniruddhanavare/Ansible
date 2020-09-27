@@ -1,0 +1,4 @@
+---
+- vcenter_server: 10.154.23.150
+- vcenter_user: administrator@vsphere.local
+- vcenter_pass: P@ssw0rd
