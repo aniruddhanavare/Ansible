@@ -1,0 +1,19 @@
+---
+- name: Create File
+  gather_facts: no
+  hosts: localhost
+  vars_files:
+    - ../vars.yml
+  tasks:
+    - name: Remove VM 
+      vmware_guest:
+        hostname: "{{ vcenter_server }}"
+        username: "{{ vcenter_user }}"
+        password: "{{ vcenter_pass }}"
+        validate_certs: no
+        name: "{{ vm_name }}"
+        state: absent
+        force: true
+      register: facts
+      retries: 10
+      delay: 5

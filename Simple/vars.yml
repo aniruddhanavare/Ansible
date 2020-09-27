@@ -3,5 +3,6 @@
 - vcenter_user: administrator@vsphere.local
 - vcenter_pass: P@ssw0rd
 - datacenter: CloudMatrix
+- cluster: vRA-Extended
 - vm_username: root
 - vm_password: VMware1!
