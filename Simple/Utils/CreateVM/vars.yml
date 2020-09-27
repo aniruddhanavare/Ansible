@@ -12,7 +12,6 @@
 - vm_memory: 1024
 - vm_cpus: 1
 - disk_size: 25
-
 - network_name: VM Network
 - network_ip: 10.155.124.112
 - network_netmask: 255.255.255.192
