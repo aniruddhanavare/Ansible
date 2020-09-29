@@ -46,7 +46,7 @@
       delegate_to: localhost
       register: deploy
      
-    - name: Run command inside a virtual machine
+    - name: Install Apache Server
       community.vmware.vmware_vm_shell:
         hostname: "{{ vcenter_server }}"
         username: "{{ vcenter_user }}"
