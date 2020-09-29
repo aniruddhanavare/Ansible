@@ -1,7 +1,7 @@
 ---
 - name: Configure remote machines
   hosts: all
-  become: yes
+  become: true
   gather_facts: yes
   roles:
     - apache
