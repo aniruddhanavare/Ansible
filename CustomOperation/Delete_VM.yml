@@ -1,0 +1,16 @@
+---
+- name: Suspend a VM
+  gather_facts: no
+  hosts: localhost
+  vars_files:
+    - vcenter_vars.yml
+  tasks:
+    - name: Set powerstate of a virtual machine to suspended by using name
+      vmware_guest:
+        hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
+        validate_certs: no
+        name: "{{ vm_name }}"
+        state: absent
+      delegate_to: localhost

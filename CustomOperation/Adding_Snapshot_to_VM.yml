@@ -1,0 +1,20 @@
+---
+- name: Create snapshot of VM
+  gather_facts: no
+  hosts: localhost
+  vars_files:
+    - vcenter_vars.yml
+  tasks:
+    - name: Create Snapshot
+      vmware_guest_snapshot:
+        hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
+        validate_certs: no
+        datacenter: "{{ datacenter }}"
+        folder: "/{{ datacenter }}/vm/"
+        name: "{{ vm_name }}"
+        state: present
+        snapshot_name: "{{snapshot_name}}"
+        description: Fixes_done_on_vm
+      delegate_to: localhost

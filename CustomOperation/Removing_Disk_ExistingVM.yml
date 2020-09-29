@@ -1,0 +1,39 @@
+---
+- name: Remove last added disk from existing VM
+  gather_facts: no
+  hosts: localhost
+  vars_files:
+    - vcenter_vars.yml
+  tasks:
+    - name: Getting information about VM {{ vm_name }}
+      vmware_guest_disk_facts:
+        hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
+        validate_certs: no
+        datacenter: "{{ datacenter }}"
+        name: "{{ vm_name }}"
+      register: disk_info
+    - name: set fact - controllerFacts
+      set_fact: 
+        controllerFacts: "{{ disk_info.guest_disk_facts.values()| map(attribute='controller_key') | list  }}" 
+    - name: set facts - controllerKey
+      set_fact: 
+        controllerKey: "{{ controllerFacts | sort | last  }}"
+    - name: set fact - unitNumber
+      set_fact:
+        unitNumber: "{{ disk_info.guest_disk_facts.values() |selectattr('controller_key','equalto',(controllerKey | int))|map(attribute='unit_number')| list | sort | last  }}"
+    - name: Remove disks from virtual machine
+      vmware_guest_disk:
+        hostname: "{{ lookup('env', 'VMWARE_HOST') }}" 
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
+        validate_certs: false
+        datacenter: "{{ datacenter }}"
+        name: "{{vm_name}}"
+        disk:
+          - state: absent
+            scsi_controller: "{{controllerKey[3:4]}}"
+            unit_number: "{{unitNumber}}"
+      delegate_to: localhost
+      register: diskFacts
