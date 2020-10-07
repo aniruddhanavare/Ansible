@@ -55,7 +55,7 @@
         vm_password: "{{ vm_password }}"       
         vm_id: "{{ vm_name }}"
         vm_shell: "/usr/bin/yum"
-        vm_shell_args: " install -y httpd;  service httpd start; /sbin/iptables -I INPUT -p tcp --dport 80 -j ACCEPT; /etc/rc.d/init.d/iptables save "
+        vm_shell_args: " install -y httpd;  service httpd start; /sbin/iptables -I INPUT -p tcp --dport 80 -j ACCEPT; /etc/rc.d/init.d/iptables save; mkdir -p /var/www/html "
         vm_shell_cwd: "/usr/bin"
       delegate_to: localhost
       register: shell_command_output
