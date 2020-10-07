@@ -2,15 +2,13 @@
 - name: Create File
   gather_facts: no
   hosts: localhost
-  vars_files:
-    - vars.yml
   tasks:
 
     - name: Create a virtual machine from a template
       community.vmware.vmware_guest:
-        hostname: "{{ vcenter_server }}"
-        username: "{{ vcenter_user }}"
-        password: "{{ vcenter_pass }}"
+        hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
         validate_certs: no
         datacenter: "{{ datacenter }}"
         cluster: "{{ cluster }}"
@@ -42,6 +40,6 @@
           - 8.8.8.8 
           domain: "{{ network_domain }}"          
         wait_for_ip_address: yes
-        wait_for_ip_address_timeout: 60
+        wait_for_ip_address_timeout: 300
       delegate_to: localhost
       register: deploy
