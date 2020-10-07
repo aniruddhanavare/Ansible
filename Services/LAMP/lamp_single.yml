@@ -6,9 +6,9 @@
 
     - name: Create a virtual machine from a template
       community.vmware.vmware_guest:
-        hostname: "{{ vcenter_server }}"
-        username: "{{ vcenter_user }}"
-        password: "{{ vcenter_pass }}"
+        hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
         validate_certs: no
         datacenter: "{{ datacenter }}"
         cluster: "{{ cluster }}"
@@ -46,9 +46,9 @@
      
     - name: Install Apache Server
       community.vmware.vmware_vm_shell:
-        hostname: "{{ vcenter_server }}"
-        username: "{{ vcenter_user }}"
-        password: "{{ vcenter_pass }}"
+        hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
         datacenter: "{{ datacenter }}"
         validate_certs: no
         vm_username: "{{ vm_username }}"
@@ -63,9 +63,9 @@
      
     - name: Install PHP
       community.vmware.vmware_vm_shell:
-        hostname: "{{ vcenter_server }}"
-        username: "{{ vcenter_user }}"
-        password: "{{ vcenter_pass }}"
+        hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
         datacenter: "{{ datacenter }}"
         validate_certs: no
         vm_username: "{{ vm_username }}"
@@ -79,9 +79,9 @@
 
     - name: Copy PHP Index file to vm
       community.vmware.vmware_guest_file_operation:
-        hostname: "{{ vcenter_server }}"
-        username: "{{ vcenter_user }}"
-        password: "{{ vcenter_pass }}"
+        hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
         datacenter: "{{ datacenter }}"
         validate_certs: no
         vm_id: "{{ vm_name }}"
@@ -95,9 +95,9 @@
 
     - name: Install MySQL - Copy Installation File
       community.vmware.vmware_guest_file_operation:
-        hostname: "{{ vcenter_server }}"
-        username: "{{ vcenter_user }}"
-        password: "{{ vcenter_pass }}"
+        hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
         datacenter: "{{ datacenter }}"
         validate_certs: no
         vm_id: "{{ vm_name }}"
@@ -111,9 +111,9 @@
 
     - name: Install MySQL
       community.vmware.vmware_vm_shell:
-        hostname: "{{ vcenter_server }}"
-        username: "{{ vcenter_user }}"
-        password: "{{ vcenter_pass }}"
+        hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
         datacenter: "{{ datacenter }}"
         validate_certs: no
         vm_username: "{{ vm_username }}"
@@ -127,9 +127,9 @@
 
     - name: Install phpMyAdmin
       community.vmware.vmware_vm_shell:
-        hostname: "{{ vcenter_server }}"
-        username: "{{ vcenter_user }}"
-        password: "{{ vcenter_pass }}"
+        hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
         datacenter: "{{ datacenter }}"
         validate_certs: no
         vm_username: "{{ vm_username }}"
