@@ -2,8 +2,6 @@
 - name: Create File
   gather_facts: no
   hosts: localhost
-  vars_files:
-    - vars.yml
   tasks:
 
     - name: Create a virtual machine from a template
@@ -92,7 +90,7 @@
         copy:
             src: "files/index.php"
             dest: "/var/www/html/index.php"
-            overwrite: True
+            overwrite: False
       delegate_to: localhost      
 
     - name: Install MySQL - Copy Installation File
@@ -126,3 +124,20 @@
         vm_shell_cwd: "/tmp"
       delegate_to: localhost
       register: shell_command_output       
+
+    - name: Install phpMyAdmin
+      community.vmware.vmware_vm_shell:
+        hostname: "{{ vcenter_server }}"
+        username: "{{ vcenter_user }}"
+        password: "{{ vcenter_pass }}"
+        datacenter: "{{ datacenter }}"
+        validate_certs: no
+        vm_username: "{{ vm_username }}"
+        vm_password: "{{ vm_password }}"       
+        vm_id: "{{ vm_name }}"
+        vm_shell: "/bin/chmod"
+        vm_shell_args: " u+x installphpMyAdmin.sh; sh installphpMyAdmin.sh | tee -a /tmp/installphpMyAdmin.log"
+        vm_shell_cwd: "/tmp"
+      delegate_to: localhost
+      register: shell_command_output       
+     
