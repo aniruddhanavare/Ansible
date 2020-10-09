@@ -1,0 +1,16 @@
+---
+- name: Add a disk to already existing VM
+  gather_facts: no
+  hosts: localhost
+  vars_files:
+    - vcenter_vars.yml
+  tasks:
+    - name: Getting information about VM {{ vm_name }}
+      vmware_guest_disk_facts:
+        hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
+        validate_certs: no
+        datacenter: "{{ datacenter }}"
+        name: "{{ vm_name }}"
+      register: disk_info
