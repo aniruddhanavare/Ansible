@@ -1,0 +1,5 @@
+ansible-playbook createMultipleVMs.yml --extra-vars "datacenter=CloudMatrix cluster=vRA-Extended folder=Test vm_name=ani-1 network_ip=10.88.25.101 template=CentOS6.6 vm_username=root vm_password=VMware1! vm_memory=1024 vm_cpus=1 disk_size=25 network_name='VM Network' network_netmask=255.255.255.192 network_device_type=vmxnet3 network_domain=mcmpdomain network_gateway=10.155.124.65 network_dns_server=10.154.23.131"
+
+
+
+ansible-playbook createMultipleVMs.yml --extra-vars "datacenter=CloudMatrix cluster=vRA-Extended folder=Test vm_name=ani-91 network_ip=10.155.124.91 template=RHEL7.5_Ani vm_username=root vm_password=VMware1! vm_memory=16384 vm_cpus=4 disk_size=100 network_name='VM Network' network_netmask=255.255.255.192 network_device_type=vmxnet3 network_domain=mcmpdomain network_gateway=10.155.124.65 network_dns_server=10.154.23.131"
