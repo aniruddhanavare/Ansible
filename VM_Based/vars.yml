@@ -1,6 +1,3 @@
 ---
-name_prefix: manageiq-automation
-provider_apikey: 
-region: us-east
-resource_group_name: manage-iq
-tag: manageiq-vm-based-deploy
+test: xyz
+
