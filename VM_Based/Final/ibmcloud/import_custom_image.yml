@@ -1,0 +1,24 @@
+---
+- name: Set VM image url
+  set_fact:
+    cacheable: True
+    custom_image_href: "cos://{{region}}/{{bucket_name}}/{{destination_image_name}}"
+
+- name: Import Custom ManageIQ image
+  ibm_is_image:
+    name: "{{ name_prefix }}-custom-image"
+    href: "{{ custom_image_href }}"
+    operating_system: "{{ custom_image_os }}"
+    state: available
+    resource_group: "{{ resource_group_id }}"
+    tags: "{{ tag }}"
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+  register: custom_image
+  
+- name: Set VM image fact
+  set_fact:
+    cacheable: True
+    vsi_image: "{{ custom_image.resource.id }}"
+
+     

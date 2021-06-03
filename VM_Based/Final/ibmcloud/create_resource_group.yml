@@ -1,0 +1,23 @@
+---
+- block:
+  - name: Create Resource group
+    ibm_resource_group:
+      name: "{{ resource_group_name }}"
+      tags: "{{ tag }}"
+      state: available
+      region: "{{ region }}"
+      ibmcloud_api_key: "{{ provider_apikey }}"
+    register: resource_group_output
+  rescue:
+  - name: Get Resource group if it exists
+    ibm_resource_group_info:
+      name: "{{ resource_group_name }}"
+      region: "{{ region }}"
+      ibmcloud_api_key: "{{ provider_apikey }}"
+    register: resource_group_output
+
+- name: Save Resource group Id
+  set_fact:
+    cacheable: True
+    resource_group_id: "{{ resource_group_output.resource.id}}"
+

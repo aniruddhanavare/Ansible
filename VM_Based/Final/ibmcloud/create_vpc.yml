@@ -1,0 +1,17 @@
+---
+- name: Create VPC
+  ibm_is_vpc:
+    name: "{{ name_prefix }}-vpc"
+    resource_group: "{{ resource_group_id }}"
+    default_security_group_name: "{{ name_prefix }}-security-group"
+    default_routing_table_name: "{{ name_prefix }}-routing-table"
+    tags: "{{ tag }}"
+    state: available
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+  register: vpc_create_output
+
+- name: Save VPC as fact
+  set_fact:
+    cacheable: True
+    vpc: "{{ vpc_create_output.resource }}"

@@ -1,0 +1,184 @@
+---
+- name: Create Volume for {{ vm_type }} {{ vm_node }} VMDB VM in zone {{ vm_zone }}
+  ibm_is_volume:
+    name: "{{ name_prefix }}-{{ vm_node }}-vmdb-{{ vm_name }}-data-volume"
+    state: available
+    profile: "{{ vmdb_volume_profile }}"
+    capacity: "{{ vmdb_volume_capacity }}"
+    encryption_key: "{{ vmdb_volume_encryption_key }}"
+    zone: "{{ vm_zone }}"
+    tags: "{{ tag }}"
+    resource_group: "{{ resource_group_id }}"
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+  register: vmdb_volume_create_output
+
+- name: Save Volume for {{ vm_type }} {{ vm_node }} VMDB VM in zone {{ vm_zone }} as fact
+  set_fact:
+    cacheable: True
+    data_volume: "{{ vmdb_volume_create_output.resource }}"
+
+- name: Configure {{ vm_type }} {{ vm_node }} VMDB VM in zone {{ vm_zone }}
+  ibm_is_instance:
+    name: "{{ name_prefix }}-{{ vm_node }}-vmdb-{{ vm_name }}"
+    state: available
+    vpc: "{{ vpc.id }}"
+    profile: "{{ vsi_profile }}"
+    image: "{{ vsi_image }}"
+    keys:
+      - "{{ ssh_key.id }}"
+    boot_volume:
+      - name: "{{ name_prefix }}-{{ vm_node }}-vmdb-{{ vm_name }}-boot-volume"
+    volumes: "{{ data_volume.id }}"
+    auto_delete_volume: True
+    primary_network_interface:
+      - name: "{{ network_interface_name }}"
+        subnet: "{{ subnet.id }}"
+    zone: "{{ vm_zone }}"
+    tags: "{{ tag }}"
+    resource_group: "{{ resource_group_id }}"
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+  register: vmdb_vsi_create_output
+
+- name: Save {{ vm_type }} {{ vm_node }} VMDB VM in zone {{ vm_zone }} as fact
+  set_fact:
+    cacheable: True
+    vmdb_vsi: "{{ vmdb_vsi_create_output.resource }}"
+
+- name: Configure Floating IP Address for {{ vm_type }} {{ vm_node }} VMDB in zone {{ vm_zone }}
+  ibm_is_floating_ip:
+    name: "{{ name_prefix }}-{{ vm_node }}-vmdb-{{ vm_name }}-ip"
+    state: available
+    target: "{{ vmdb_vsi.primary_network_interface[0]['id'] }}"
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+  register: vmdb_fip_create_output
+
+- name: Save Floating IP for {{ vm_type }} {{ vm_node }} VMDB in zone {{ vm_zone }} as fact
+  set_fact:
+    cacheable: True
+    vmdb_fip: "{{ vmdb_fip_create_output.resource }}"
+
+- name: Create VMDB dictionary
+  set_fact: 
+    vmdbs: "{{ vmdbs | default({}) | combine ({ vm_name : vmdb_vsi.primary_network_interface[0]['primary_ipv4_address'] }) }}"
+
+- name: Set Private VMDB Ipaddress
+  set_fact:
+    cacheable: True
+    vmdb_private_ipaddress: "{{ vmdbs[primary_db] }}"
+
+- name: Add Master Primary VMDB VM {{ vmdb_vsi.name }} to list
+  set_fact:
+    master_primary_db: "{{ master_primary_db +
+                       [{ 'floating_ip': vmdb_fip.address,
+                          'private_ip': vmdb_vsi.primary_network_interface[0]['primary_ipv4_address'],
+                          'miq_appliance_hostname': vmdb_vsi.name,
+                          'miq_cluster_node_number': miq_cluster_node,
+                          'primary_host_ip': vmdb_private_ipaddress,
+                          'miq_region': miq_region,
+                          'replication_type': vm_type,
+                          'miq_db_disk': miq_db_disk}] }}"
+  when: vm_node == "master" and vm_type == "primary"
+
+- name: Add Master Standby VMDB VM {{ vmdb_vsi.name }} to list
+  set_fact:
+    vmdb_appliance: "{{ vmdb_appliance +
+                       [{ 'floating_ip': vmdb_fip.address,
+                          'private_ip': vmdb_vsi.primary_network_interface[0]['primary_ipv4_address'],
+                          'miq_appliance_hostname': vmdb_vsi.name,
+                          'miq_cluster_node_number': miq_cluster_node,
+                          'primary_host_ip': vmdb_private_ipaddress,
+                          'miq_region': miq_region,
+                          'replication_type': vm_type,
+                          'miq_db_disk': miq_db_disk}] }}"
+  when: vm_node == "master" and vm_type == "standby"
+
+- name: Add VMDB VM {{ vmdb_vsi.name }} to list
+  set_fact:
+    vmdb_appliance: "{{ vmdb_appliance +
+                       [{ 'floating_ip': vmdb_fip.address,
+                          'private_ip': vmdb_vsi.primary_network_interface[0]['primary_ipv4_address'],
+                          'miq_appliance_hostname': vmdb_vsi.name,
+                          'miq_cluster_node_number': miq_cluster_node,
+                          'primary_host_ip': vmdb_private_ipaddress,
+                          'miq_region': miq_region,
+                          'replication_type': vm_type,
+                          'miq_db_disk': miq_db_disk}] }}"
+  when: vm_node != "master"
+
+- name: Configure {{ vm_type }} {{ vm_node }} UI VM in zone {{ vm_zone }}
+  ibm_is_instance:
+    name: "{{ name_prefix }}-{{ vm_node }}-ui-{{ vm_name }}"
+    state: available
+    vpc: "{{ vpc.id }}"
+    profile: "{{ vsi_profile }}"
+    image: "{{ vsi_image }}"
+    keys:
+      - "{{ ssh_key.id }}"
+    boot_volume:
+      - name: "{{ name_prefix }}-{{ vm_node }}-ui-{{ vm_name }}-boot-volume"
+    primary_network_interface:
+      - name: "{{ network_interface_name }}"
+        subnet: "{{ subnet.id }}"
+    zone: "{{ vm_zone }}"
+    tags: "{{ tag }}"
+    resource_group: "{{ resource_group_id }}"
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+  register: ui_vsi_create_output
+
+- name: Save {{ vm_type }} {{ vm_node }} UI VM in zone {{ vm_zone }} as fact
+  set_fact:
+    cacheable: True
+    ui_vsi: "{{ ui_vsi_create_output.resource }}"
+
+- name: Configure Floating IP Address for {{ vm_type }} {{ vm_node }} UI  in zone {{ vm_zone }}
+  ibm_is_floating_ip:
+    name: "{{ name_prefix }}-{{ vm_node }}-ui-{{ vm_name }}-ip"
+    state: available
+    target: "{{ ui_vsi.primary_network_interface[0]['id'] }}"
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+  register: ui_fip_create_output
+
+- name: Save Floating IP for {{ vm_type }} {{ vm_node }} UI in zone {{ vm_zone }} as fact
+  set_fact:
+    cacheable: True
+    ui_fip: "{{ ui_fip_create_output.resource }}"
+
+- name: Add Primary Master UI VM {{ ui_vsi.name }} to list
+  set_fact:
+    master_primary_appliance: "{{ master_primary_appliance +
+                                  [{ 'floating_ip': ui_fip.address,
+                                     'private_ip': ui_vsi.primary_network_interface[0]['primary_ipv4_address'],
+                                     'miq_appliance_hostname': ui_vsi.name,
+                                     'vmdb_private_ip': vmdb_private_ipaddress }] }}"
+  when: vm_node == "master" and vm_type == "primary"
+
+- name: Add Standby Master UI VM {{ ui_vsi.name }} to list
+  set_fact:
+    appliance: "{{ appliance +
+                       [{ 'floating_ip': ui_fip.address,
+                          'private_ip': ui_vsi.primary_network_interface[0]['primary_ipv4_address'],
+                          'miq_appliance_hostname': ui_vsi.name,
+                          'vmdb_private_ip': vmdb_private_ipaddress }] }}"
+  when: vm_node == "master" and vm_type == "standby"
+
+- name: Add UI VM {{ ui_vsi.name }} to list
+  set_fact:
+    appliance: "{{ appliance +
+                       [{ 'floating_ip': ui_fip.address,
+                          'private_ip': ui_vsi.primary_network_interface[0]['primary_ipv4_address'],
+                          'miq_appliance_hostname': ui_vsi.name,
+                          'vmdb_private_ip': vmdb_private_ipaddress }] }}"
+  when: vm_node != "master"
+
+- include_tasks: worker_appliance.yml
+  loop: "{{ range(0, worker_appliance_count|int)|list }}"
+  loop_control:
+    index_var: my_idx
+
+
+

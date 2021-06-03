@@ -1,0 +1,13 @@
+---
+- name: Create Authorization Policy
+  ibm_iam_authorization_policy:
+    source_service_name: "is"
+    source_resource_type: "image"
+    source_resource_instance_id: 
+    target_service_name: "cloud-object-storage"
+    target_resource_instance_id: "{{ object_storage_id }}"
+    roles: ["Reader","Writer"]
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+  register: authorization_policy_output
+

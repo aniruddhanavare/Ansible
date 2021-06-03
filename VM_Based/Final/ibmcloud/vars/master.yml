@@ -1,0 +1,26 @@
+---
+master_sets:
+  - master:
+    - name: 1
+      zone: "{{primary_zone}}"
+      type: primary
+      node: master
+      volume_profile: general-purpose
+      volume_capacity: 100
+      volume_encryption_key: 
+      miq_cluster_node_number: 1
+      miq_region: 99
+      miq_db_disk: /dev/vdd
+      primary_db: 1
+    - name: 2
+      zone: "{{standby_zone}}"
+      type: standby
+      node: master
+      volume_profile: general-purpose
+      volume_capacity: 100
+      volume_encryption_key: 
+      miq_cluster_node_number: 2
+      miq_region: 99
+      miq_db_disk: /dev/vdd
+      primary_db: 1
+

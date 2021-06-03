@@ -1,0 +1,25 @@
+---
+- block:
+  - name: Create SSH Key
+    ibm_is_ssh_key:
+      name: "{{ name_prefix }}-ssh-key"
+      public_key: "{{ ssh_public_key }}"
+      tags: "{{ tag }}"
+      resource_group: "{{ resource_group_id }}"
+      region: "{{ region }}"
+      ibmcloud_api_key: "{{ provider_apikey }}"
+    register: ssh_key_create_output
+  rescue:
+  - name: Get existing SSH key 
+    ibm_is_ssh_key_info:
+      name: "{{ name_prefix }}-ssh-key"
+      region: "{{ region }}"
+      ibmcloud_api_key: "{{ provider_apikey }}"
+    register: ssh_key_create_output
+
+- name: Save SSH Key as fact
+  set_fact:
+    cacheable: True
+    ssh_key: "{{ ssh_key_create_output.resource }}"
+
+

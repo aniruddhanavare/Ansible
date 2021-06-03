@@ -1,0 +1,32 @@
+---
+- name: Configure Security Group Rule Inbound TCP IP {{ security_group_rule_ip_address }}
+  ibm_is_security_group_rule:
+    state: available
+    group: "{{ vpc.default_security_group }}"
+    direction: inbound
+    remote: "{{ security_group_rule_ip_address }}"
+    tcp:
+      - port_max: "{{ tcp_max_port }}"
+        port_min: "{{ tcp_min_port }}"
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+
+- name: Configure Security Group Rule Inbound ALL {{ security_group_rule_ip_address }}
+  ibm_is_security_group_rule:
+    state: available
+    group: "{{ vpc.default_security_group }}"
+    direction: inbound
+    remote: "{{ security_group_rule_ip_address }}"
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+
+- name: Configure Security Group Rule Inbound ICMP {{ security_group_rule_ip_address }}
+  ibm_is_security_group_rule:
+    state: available
+    group: "{{ vpc.default_security_group }}"
+    direction: inbound
+    remote: "{{ security_group_rule_ip_address }}"
+    icmp:
+      - type: 8
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"

@@ -1,0 +1,21 @@
+---
+- name: Fetch the variables from var file
+  include_vars:
+    dir: vars
+
+- name: Set master_primary_db list
+  set_fact:
+    master_primary_db: []
+
+- name: Set master_primary_appliance list
+  set_fact:
+    master_primary_appliance: []
+
+- name: Set vmdb_appliance list
+  set_fact:
+    vmdb_appliance: []
+
+- name: Set appliance list
+  set_fact:
+    appliance: []
+

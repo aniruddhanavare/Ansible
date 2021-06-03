@@ -1,0 +1,49 @@
+---
+- name: Create the ACL Network
+  ibm_is_network_acl:
+    name: "{{ name_prefix }}-acl"
+    vpc: "{{ vpc.id }}"
+    resource_group: "{{ resource_group_id }}"
+    rules:
+      - name: "{{ name_prefix }}-outbound-tcp"
+        action: "allow"
+        source: "{{ acl_tcp_source }}"
+        destination: "{{ acl_tcp_destination }}"
+        direction: "outbound"
+        tcp: 
+          port_max: "{{ tcp_max_port }}"
+          port_min: "{{ tcp_min_port }}"
+          source_port_max: "{{ tcp_max_port }}"
+          source_port_min: "{{ tcp_min_port }}"
+      - name: "{{ name_prefix }}-inbound-tcp"
+        action: "allow"
+        source: "{{ acl_tcp_source }}"
+        destination: "{{ acl_tcp_destination }}"
+        direction: "inbound"
+        tcp: 
+          port_max: "{{ tcp_max_port }}"
+          port_min: "{{ tcp_min_port }}"
+          source_port_max: "{{ tcp_max_port }}"
+          source_port_min: "{{ tcp_min_port }}"
+      - name: "{{ name_prefix }}-outbound"
+        action: "allow"
+        source: "{{ acl_all_source }}"
+        destination: "{{ acl_all_destination }}"
+        direction: "outbound"
+      - name: "{{ name_prefix }}-inbound"
+        action: "allow"
+        source: "{{ acl_all_source }}"
+        destination: "{{ acl_all_destination }}"
+        direction: "inbound"
+    tags: "{{ tag }}"
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+  register: network_acl_create_output
+
+- name: Save Network ACL as fact
+  set_fact:
+    cacheable: True
+    acl: "{{ network_acl_create_output.resource }}"
+
+
+

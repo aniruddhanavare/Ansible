@@ -1,0 +1,74 @@
+---
+- name: Create IBM Cloud Infrastructure
+  hosts: localhost
+  collections:
+   - ibm.cloudcollection
+  tasks:
+    - name: Initialize Variables
+      include_tasks: initialize_vars.yml
+
+    - name: Create Resource Group
+      include_tasks: create_resource_group.yml
+
+    - name: Download ManageIQ image
+      include_tasks: download_image.yml
+
+    - name: Create Cloud Object Storage, Bucket and Upload Image
+      include_tasks: create_object_storage.yml
+
+    - name: Create Authorization
+      include_tasks: create_authorization.yml
+  
+    - name : Create VPC
+      include_tasks: create_vpc.yml
+
+    - name : Create ACL
+      include_tasks: create_acl.yml
+
+    - name : Create SSH key
+      include_tasks: create_ssh_key.yml
+
+    - name: Import Custom Image
+      include_tasks: import_custom_image.yml
+
+    - name : Add users IP address to security group
+      include_tasks: add_ip_to_security_group.yml
+
+    - name : Add Master Subnet Group
+      include_tasks: create_subnet_set.yml
+      vars:
+        vm_name: "{{ outer_item.1.name }}"
+        vm_zone: "{{ outer_item.1.zone }}"
+        vm_type: "{{ outer_item.1.type }}"
+        vm_node: "{{ outer_item.1.node }}"
+        vmdb_volume_profile: "{{ outer_item.1.volume_profile }}"
+        vmdb_volume_capacity: "{{ outer_item.1.volume_capacity }}"
+        vmdb_volume_encryption_key: "{{ outer_item.1.volume_encryption_key }}"
+        miq_cluster_node: "{{ outer_item.1.miq_cluster_node_number }}"
+        miq_region: "{{ outer_item.1.miq_region }}"
+        miq_db_disk: "{{ outer_item.1.miq_db_disk }}"
+        worker_appliance_count: 0
+        primary_db: "{{ outer_item.1.primary_db }}"
+      loop: "{{ master_sets|subelements('master') }}"
+      loop_control:
+        loop_var: outer_item
+
+    - name : Add Worker Subnet Groups
+      include_tasks: create_subnet_set.yml
+      vars:
+        vm_name: "{{ outer_item.1.name }}"
+        vm_zone: "{{ outer_item.1.zone }}"
+        vm_type: "{{ outer_item.1.type }}"
+        vm_node: "{{ outer_item.1.node }}"
+        vmdb_volume_profile: "{{ outer_item.1.volume_profile }}"
+        vmdb_volume_capacity: "{{ outer_item.1.volume_capacity }}"
+        vmdb_volume_encryption_key: "{{ outer_item.1.volume_encryption_key }}"
+        miq_cluster_node: "{{ outer_item.1.miq_cluster_node_number }}"
+        miq_region: "{{ outer_item.1.miq_region }}"
+        miq_db_disk: "{{ outer_item.1.miq_db_disk }}"
+        worker_appliance_count: "{{ outer_item.1.worker_appliance_count|int }}"
+        primary_db: "{{ outer_item.1.primary_db }}"
+      loop: "{{ worker_sets|subelements('worker') }}"
+      loop_control:
+        loop_var: outer_item
+

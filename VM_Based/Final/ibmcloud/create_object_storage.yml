@@ -1,0 +1,67 @@
+---
+- block:
+  - name: Create Object Storage
+    ibm_resource_instance:
+      name: "{{ name_prefix }}-object-storage"
+      resource_group_id: "{{ resource_group_id }}"
+      location: "{{ object_storage_location }}"
+      service: "cloud-object-storage"
+      plan: "{{ object_storage_plan }}"
+      tags: "{{ tag }}"
+      state: available
+      region: "{{ region }}"
+      ibmcloud_api_key: "{{ provider_apikey }}"
+    register: object_storage_output
+  rescue:
+  - name: Get Object Storage if it exists
+    ibm_resource_instance_info:
+      name: "{{object_storage_name}}"
+      resource_group_id: "{{ resource_group_id }}"
+      location: "{{ object_storage_location }}"
+      service: "cloud-object-storage"
+      region: "{{ region }}"
+      ibmcloud_api_key: "{{ provider_apikey }}"
+    register: object_storage_output
+
+- name: Save Cloud Object Storage Id
+  set_fact:
+    cacheable: True
+    object_storage_id: "{{ object_storage_output.resource.id}}"
+
+- block:
+  - name: Create Bucket
+    ibm_cos_bucket:
+      bucket_name: "{{ name_prefix }}-bucket"
+      region_location: "{{ region }}"
+      storage_class: "{{ bucket_storage_class }}"
+      resource_instance_id: "{{ object_storage_id }}"
+      state: available
+      region: "{{ region }}"
+      ibmcloud_api_key: "{{ provider_apikey }}"
+    register: ibm_cos_bucket_output
+  rescue:
+  - name: Get existing Bucket 
+    ibm_cos_bucket_info:
+      bucket_name: "{{ name_prefix }}-bucket"
+      bucket_region: "{{ region }}"
+      bucket_type: region_location
+      resource_instance_id: "{{ object_storage_id }}"
+      region: "{{ region }}"
+      ibmcloud_api_key: "{{ provider_apikey }}"
+    register: ibm_cos_bucket_output
+    
+- name: Save Bucket
+  set_fact:
+    cacheable: True
+    bucket: "{{ ibm_cos_bucket_output.resource}}"
+
+- name: Upload object to Bucket
+  ibm_cos_bucket_object:
+    bucket_crn: "{{ bucket.crn}}"
+    bucket_location: "{{ bucket.region_location }}"
+    content_file: "{{image_dest}}{{destination_image_name}}"
+    key: "{{destination_image_name}}"
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+  register: ibm_cos_bucket_output
+

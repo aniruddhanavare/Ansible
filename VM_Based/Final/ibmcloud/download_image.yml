@@ -1,0 +1,38 @@
+---
+- name: Set download destination path
+  set_fact:
+    cacheable: True
+    image_dest: "{{ image_dest }}/"
+  when: image_dest[-1] != '/'
+
+- name: ManageIQ source image
+  stat:
+    path: "{{image_dest}}{{source_image_name}}"
+  register: manageiq_source_image
+
+- name: Set Destination image name as fact
+  set_fact:
+    cacheable: True
+    destination_image_name: "{{ source_image_name | splitext | first }}.qcow2"
+
+- name: ManageIQ dest image
+  stat:
+    path: "{{image_dest}}{{destination_image_name}}"
+  register: manageiq_dest_image
+
+- name: Download ManageIQ Image
+  get_url:
+    url: "{{image_url}}{{source_image_name}}"
+    dest: "{{ image_dest }}"
+  when: not manageiq_source_image.stat.exists and not manageiq_dest_image.stat.exists
+
+- name: ManageIQ source image after download
+  stat:
+    path: "{{image_dest}}{{source_image_name}}"
+  register: manageiq_source_image
+
+- name: Rename ManageIQ Image extension
+  command: mv "{{image_dest}}{{source_image_name}}" "{{image_dest}}{{destination_image_name}}"
+  when: manageiq_source_image.stat.exists
+  
+

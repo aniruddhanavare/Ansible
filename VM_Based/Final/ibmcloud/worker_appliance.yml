@@ -1,0 +1,50 @@
+---
+- name: Configure {{ vm_type }} worker only appliance VM in zone {{ vm_zone }}
+  ibm_is_instance:
+    name: "{{ name_prefix }}-worker-{{ vm_name }}-{{ my_idx }}"
+    state: available
+    vpc: "{{ vpc.id }}"
+    profile: "{{ vsi_profile }}"
+    image: "{{ vsi_image }}"
+    keys:
+      - "{{ ssh_key.id }}"
+    boot_volume:
+      - name: "{{ name_prefix }}-worker-{{ vm_name }}-{{ my_idx }}-boot-volume"
+    primary_network_interface:
+      - name: "{{ network_interface_name }}"
+        subnet: "{{ subnet.id }}"
+    zone: "{{ vm_zone }}"
+    tags: "{{ tag }}"
+    resource_group: "{{ resource_group_id }}"
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+  register: worker_vsi_create_output
+
+- name: Save {{ vm_type }} worker only appliance VM in zone {{ vm_zone }} as fact
+  set_fact:
+    cacheable: True
+    worker_vsi: "{{ worker_vsi_create_output.resource }}"
+
+- name: Configure Floating IP Address for {{ vm_type }} worker only appliance in zone {{ vm_zone }}
+  ibm_is_floating_ip:
+    name: "{{ name_prefix }}-worker-{{ vm_name }}-{{ my_idx }}-ip"
+    state: available
+    target: "{{ worker_vsi.primary_network_interface[0]['id'] }}"
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+  register: worker_fip_create_output
+
+- name: Save Floating IP for {{ vm_type }} worker only appliance in zone {{ vm_zone }} as fact
+  set_fact:
+    cacheable: True
+    worker_fip: "{{ worker_fip_create_output.resource }}"
+
+- name: Add Appliance VM {{ worker_vsi.name }} to list
+  set_fact:
+    appliance: "{{ appliance +
+                       [{ 'floating_ip': worker_fip.address,
+                          'private_ip': worker_vsi.primary_network_interface[0]['primary_ipv4_address'],
+                          'miq_appliance_hostname': worker_vsi.name,
+                          'vmdb_private_ip': vmdb_private_ipaddress }] }}"
+
+
