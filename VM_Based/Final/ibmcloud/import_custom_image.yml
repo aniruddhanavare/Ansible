@@ -2,7 +2,7 @@
 - name: Set VM image url
   set_fact:
     cacheable: True
-    custom_image_href: "cos://{{region}}/{{bucket_name}}/{{destination_image_name}}"
+    custom_image_href: "cos://{{region}}/{{bucket.bucket_name}}/{{destination_image_name}}"
 
 - name: Import Custom ManageIQ image
   ibm_is_image:
