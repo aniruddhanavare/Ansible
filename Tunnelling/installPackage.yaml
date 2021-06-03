@@ -1,0 +1,8 @@
+---
+- name : Ansible playbook to install a package 
+  hosts: vm #Using from inventory
+  gather_facts: yes
+  tasks:
+      - package:
+          name: httpd
+          state: present
