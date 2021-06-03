@@ -1,0 +1,12 @@
+---
+- name: VM Based deployment
+  hosts: localhost
+  tasks:
+    - debug:
+        msg: "Starting Playbook execution"
+
+- import_playbook: initialize_host.yml
+
+
+
+
