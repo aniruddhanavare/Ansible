@@ -1,8 +1,8 @@
 ---
 - name : Ansible playbook to install a package 
-  hosts: vm #Using from inventory
-  gather_facts: yes
+  hosts: localhost 
   tasks:
       - package:
           name: httpd
           state: present
+        delegate_to: '{{host}}'
