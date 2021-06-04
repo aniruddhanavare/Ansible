@@ -1,5 +1,7 @@
 ---
 - name : Ansible playbook to install a package 
-  package:
-     name: httpd
-     state: present
+  hosts: localhost 
+  tasks:
+    - package:
+	 name: httpd
+	 state: present
