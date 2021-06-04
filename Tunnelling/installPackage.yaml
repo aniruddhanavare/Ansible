@@ -1,9 +1,5 @@
 ---
 - name : Ansible playbook to install a package 
-  hosts: localhost 
-  tasks:
-    - command : cat /home/demo.txt
-      delegate_to: '{{host}}'
-      register: catop
-    - debug:
-        msg: "{{catop.stdout}}"
+  package:
+     name: httpd
+     state: present
