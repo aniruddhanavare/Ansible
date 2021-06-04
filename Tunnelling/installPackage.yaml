@@ -1,7 +1,6 @@
 - name : Ansible playbook to install a package 
   hosts: localhost 
   tasks:
-    - name: Install apache packages 
-      yum:
+    - package:
         name: httpd
         state: present
