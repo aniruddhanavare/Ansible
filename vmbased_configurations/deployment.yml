@@ -1,0 +1,9 @@
+---
+- name: VM Based deployment
+  hosts: localhost
+  tasks:
+    - name: Fetch the variables from var file
+      include_vars:
+        file: configurations/group_vars/all/vars.yml
+   
+- import_playbook: configurations/miq-config.yml 
