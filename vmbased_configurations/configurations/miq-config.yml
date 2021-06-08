@@ -17,8 +17,7 @@
 
   tasks: 
   - name: Set hostname
-    hostname: 
-      name: "{{ miq_appliance_hostname }}" 
+    command: hostnamectl set-hostname " {{ miq_appliance_hostname }} "
 
   - name: Synchronize time
     become: yes
@@ -36,8 +35,7 @@
 
   tasks: 
   - name: Set hostname
-    hostname: 
-      name: "{{ miq_appliance_hostname }}" 
+    command: hostnamectl set-hostname " {{ miq_appliance_hostname }} "
 
   - name: Synchronize time
     become: yes
