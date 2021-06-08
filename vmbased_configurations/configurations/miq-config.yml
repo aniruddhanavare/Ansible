@@ -16,9 +16,6 @@
     ansible_ssh_user: root
 
   tasks: 
-  - name: Set hostname
-    command: hostnamectl set-hostname "{{ miq_appliance_hostname }}"
-
   - name: Synchronize time
     become: yes
     service:
@@ -34,9 +31,6 @@
     ansible_ssh_user: root
 
   tasks: 
-  - name: Set hostname
-    command: hostnamectl set-hostname "{{ miq_appliance_hostname }}"
-
   - name: Synchronize time
     become: yes
     service:
