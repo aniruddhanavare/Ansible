@@ -26,8 +26,9 @@
     tags: 'chrony-service'
 
   - name: Dispay Host name
-    command: hostname 
-    register: hostnameMsg  
+    command: hostname
+    delegate_to: master_primary_db
+    register: hostnameMsg 
 
   - debug: msg="{{ hostnameMsg }}"
 
