@@ -5,7 +5,7 @@
     - include_tasks: reset-default-passwor.yml
       loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
     
-      - include_tasks: reset-default-passwor.yml
+    - include_tasks: reset-default-passwor.yml
       loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}" 
 
 ## All hosts
