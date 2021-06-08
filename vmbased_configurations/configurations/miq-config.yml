@@ -17,13 +17,6 @@
     ansible_ssh_user: root
 
   tasks: 
-  - name: Restart hostnamectl service
-    command: systemctl restart systemd-hostnamed
-
-  - name: Set hostname
-    hostname: 
-      name: "{{ miq_appliance_hostname }}"
-
   - name: Synchronize time
     become: yes
     service:
@@ -31,4 +24,18 @@
       enabled: 'yes'
       state: 'started'
     tags: 'chrony-service'
+
+  - name: Restart hostnamectl service
+    command: systemctl restart systemd-hostnamed
+  
+
+  - name: Set hostname command
+    command: hostnamectl set-hostname testvm123
+
+  - name: Set hostname
+    become: yes
+    hostname: 
+      name: testvm999
+
+
 
