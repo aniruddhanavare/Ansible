@@ -7,7 +7,7 @@
         file: configurations/group_vars/all/vars.yml
     - name: Add host to inventory vmdb
       add_host:
-        hostname: "169.63.177.86"
+        hostname: "169.63.178.236"
         groups: "master_primary_db"
         private_ip: "10.241.65.77"
         miq_appliance_hostname: "auto-master-vmdb-01"
@@ -15,7 +15,7 @@
         cfme_master_region: 88
     - name: Add host to inventory UI
       add_host:
-        hostname: "169.63.180.218"
+        hostname: "169.59.162.34"
         groups: "master_primary_appliances"
         private_ip: "10.241.65.78"
         miq_appliance_hostname: "auto-master-ui-01"
