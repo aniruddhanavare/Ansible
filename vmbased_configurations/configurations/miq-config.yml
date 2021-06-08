@@ -13,7 +13,7 @@
 - hosts: master_primary_db
   become: yes
   vars:
-    ansible_pass: "{{ cfme_new_root_pw }}"
+    ansible_ssh_pass: "{{ cfme_new_root_pw }}"
     ansible_user: root
 
   tasks: 
