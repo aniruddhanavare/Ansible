@@ -10,7 +10,7 @@
       - group_vars/all/vars.yml
   tasks:
     - include_tasks: reset-default-passwor.yml
-      loop: "{{ query('inventory_hostnames', 'all') }}" 
+      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
 
 ## All hosts
 - hosts: all

@@ -7,8 +7,8 @@
         file: configurations/group_vars/all/vars.yml
     - name: Add host to inventory
       add_host:
-        hostname: "169.63.177.86"
+        hostname: "169.63.180.218"
         groups: "master_primary_db"
-        private_ip: "10.241.65.74"
+        private_ip: "10.241.65.73"
 
 - import_playbook: configurations/miq-config.yml 
