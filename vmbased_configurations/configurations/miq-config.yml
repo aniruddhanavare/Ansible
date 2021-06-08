@@ -32,3 +32,8 @@
   - debug: msg="{{ hostnameMsg }}"
 
 
+  - name: Create DIR
+    command: mkdir /tmp/test99
+
+
+
