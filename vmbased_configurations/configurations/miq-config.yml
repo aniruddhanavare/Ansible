@@ -16,6 +16,10 @@
     ansible_ssh_user: root
 
   tasks: 
+  - name: Set hostname
+    hostname: 
+      name: "{{ miq_appliance_hostname }}"
+
   - name: Synchronize time
     become: yes
     service:
@@ -23,119 +27,4 @@
       enabled: 'yes'
       state: 'started'
     tags: 'chrony-service'
-
-## All hosts
-- hosts: master_primary_appliance
-  vars:
-    ansible_ssh_pass: "{{ cfme_new_root_pw }}"
-    ansible_ssh_user: root
-
-  tasks: 
-  - name: Synchronize time
-    become: yes
-    service:
-      name: 'chronyd'
-      enabled: 'yes'
-      state: 'started'
-    tags: 'chrony-service'
-
-## primary master VMDB appliance
-- hosts: master_primary_db
-  vars:
-    ansible_ssh_pass: "{{ cfme_new_root_pw }}"
-    ansible_ssh_user: root
-
-  tasks:
-  #  - name: Reboot
-  #    reboot:
-
-    - name: Restore default database configuration file
-      command: " {{ item }} "
-      with_items: 
-        - systemctl stop evmserverd
-        - cd {{ cfme_vmdb_default_folder }}
-        - \cp {{ cfme_vmdb_default_folder }}/config/database.pg.yml {{ cfme_vmdb_default_folder }}/config/database.yml
-
-        #- systemctl stop $APPLIANCE_PG_SERVICE
-        #- systemctl disable $APPLIANCE_PG_SERVICE
-        #- systemctl enable $APPLIANCE_PG_SERVICE
-        #- systemctl start $APPLIANCE_PG_SERVICE
-        - systemctl restart $APPLIANCE_PG_SERVICE
-        - su - postgres -c "dropdb  -U root  vmdb_production --if-exists"
-  
-    - name: Reset configured database
-      ansible.builtin.shell:
-       chdir: "{{ cfme_vmdb_default_folder }}"
-       cmd: DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rake evm:db:region -- --region={{ miq_region }}
-
-    - name: Disable database server
-      ansible.builtin.shell:
-       cmd: systemctl disable evmserverd
-    
-    - include_tasks: update_pg_hba_conf.yml
-
-    - name: Reboot
-      reboot:
-    
-
-## master ui appliance
-- hosts: master_primary_appliance
-  vars:
-    ansible_ssh_pass: "{{ cfme_new_root_pw }}"
-    ansible_ssh_user: root
-
-  tasks:
-  - name: Restore default database configuration file
-    command: " {{ item }} "
-    with_items: 
-      - cd {{ cfme_vmdb_default_folder }}
-      - \cp {{ cfme_vmdb_default_folder }}/config/database.pg.yml {{ cfme_vmdb_default_folder }}/config/database.yml
-  
-  - name: Configure remote database
-    block:
-    - set_fact: primary_ip={{ hostvars[groups['master_primary_db'][0]]['private_ip'] }}
-
-    - name: Fetch remote encryption key
-      shell: >
-        appliance_console_cli
-        --fetch-key={{ vmdb_private_ip }}
-        --sshlogin=root
-        --sshpassword="{{ cfme_new_root_pw }}"
-
-    - name: Connect to external region in database
-      shell: >
-        appliance_console_cli
-        --hostname={{ vmdb_private_ip }}
-        --username={{ cfme_db_user }}
-        --password={{ cfme_db_pass }}
-        --auto-failover
-      
-    - name: Reboot
-      reboot:
-
-## master VMDB appliance
-- hosts: master_primary_db
-  vars:
-    ansible_ssh_pass: "{{ cfme_new_root_pw }}"
-    ansible_ssh_user: root
-  
-  tasks:
-  - name: Configure remote database
-    block:
-    - set_fact: primary_ip={{ hostvars[groups['master_primary_db'][0]]['ansible_eth0']['ipv4']['address'] }}
-
-  - name: Configure database replication
-    shell: >
-      appliance_console_cli
-      --replication={{ replication_type }}
-      --primary-host={{ private_ip }}
-      --cluster-node-number={{ miq_cluster_node_number }}
-      --username={{ cfme_db_user }}
-      --password={{ cfme_db_pass }}
-
-  - name: Database replication status
-    command: 'su - postgres -c "repmgr cluster show"'
-    register: repmgrCluster  
-
-  - debug: msg="{{ repmgrCluster.stdout_lines }}"
 
