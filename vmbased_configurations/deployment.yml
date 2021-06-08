@@ -7,7 +7,7 @@
         file: configurations/group_vars/all/vars.yml
     - name: Add host to inventory vmdb
       add_host:
-        hostname: 169.63.179.101
+        hostname: 10.241.65.79
         groups: master_primary_db
         private_ip: 10.241.65.79
         miq_appliance_hostname: auto-master-vmdb-01
