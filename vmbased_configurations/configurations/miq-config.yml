@@ -27,7 +27,7 @@
 
   - name: Dispay Host name
     command: hostname
-    delegate_to: master_primary_db
+    delegate_to: 10.241.65.79
     register: hostnameMsg 
 
   - debug: msg="{{ hostnameMsg }}"
