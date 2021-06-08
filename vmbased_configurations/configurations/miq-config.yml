@@ -20,6 +20,7 @@
   - name: Set hostname
     hostname: 
       name: "{{ miq_appliance_hostname }}"
+      use: systemd
 
   - name: Synchronize time
     become: yes
