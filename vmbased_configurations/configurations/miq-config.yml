@@ -9,7 +9,25 @@
       loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}" 
 
 ## All hosts
-- hosts: master_primary_db:master_primary_appliance
+- hosts: master_primary_db
+  vars:
+    ansible_ssh_pass: "{{ cfme_new_root_pw }}"
+
+  tasks: 
+  - name: Set hostname
+    hostname: 
+      name: "{{ miq_appliance_hostname }}" 
+
+  - name: Synchronize time
+    become: yes
+    service:
+      name: 'chronyd'
+      enabled: 'yes'
+      state: 'started'
+    tags: 'chrony-service'
+
+## All hosts
+- hosts: master_primary_appliance
   vars:
     ansible_ssh_pass: "{{ cfme_new_root_pw }}"
 
