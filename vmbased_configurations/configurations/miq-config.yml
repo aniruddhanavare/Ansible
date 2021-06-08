@@ -46,8 +46,8 @@
     ansible_ssh_user: root
 
   tasks:
-    - name: Reboot
-      reboot:
+  #  - name: Reboot
+  #    reboot:
 
     - name: Restore default database configuration file
       command: " {{ item }} "
