@@ -9,7 +9,7 @@
       add_host:
         hostname: "169.63.177.86"
         groups: "master_primary_db"
-        private_ip: "10.241.65.75"
+        private_ip: "10.241.65.77"
         miq_appliance_hostname: "auto-master-vmdb-01"
         miq_cluster_node_number: 2
         cfme_master_region: 88
@@ -17,8 +17,8 @@
       add_host:
         hostname: "169.63.180.218"
         groups: "master_primary_appliances"
-        private_ip: "10.241.65.76"
+        private_ip: "10.241.65.78"
         miq_appliance_hostname: "auto-master-ui-01"
-        vmdb_private_ip: "10.241.65.75"
-        
+        vmdb_private_ip: "10.241.65.77"
+
 - import_playbook: configurations/miq-config.yml 
