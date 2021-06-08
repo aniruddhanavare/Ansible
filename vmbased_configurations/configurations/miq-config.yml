@@ -17,10 +17,12 @@
     ansible_ssh_user: root
 
   tasks: 
+  - name: Restart hostnamectl service
+    command: systemctl restart systemd-hostnamed
+
   - name: Set hostname
     hostname: 
       name: "{{ miq_appliance_hostname }}"
-      use: systemd
 
   - name: Synchronize time
     become: yes
