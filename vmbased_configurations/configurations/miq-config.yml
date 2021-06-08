@@ -25,17 +25,18 @@
       state: 'started'
     tags: 'chrony-service'
 
-  - name: Restart hostnamectl service
-    command: systemctl restart systemd-hostnamed
+  - name: Restore default database configuration file
+    command: " {{ item }} "
+    with_items: 
+      - systemctl stop evmserverd
+      - cd {{ cfme_vmdb_default_folder }}
+      - \cp {{ cfme_vmdb_default_folder }}/config/database.pg.yml {{ cfme_vmdb_default_folder }}/config/database.yml
+      - systemctl restart $APPLIANCE_PG_SERVICE
+      - su - postgres -c "dropdb  -U root  vmdb_production --if-exists"
   
-
-  - name: Set hostname command
-    command: hostnamectl set-hostname testvm123
-
-  - name: Set hostname
-    become: yes
-    hostname: 
-      name: testvm999
-
+  - name: Reset configured database
+    ansible.builtin.shell:
+     chdir: "{{ cfme_vmdb_default_folder }}"
+     cmd: DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rake evm:db:region -- --region={{ miq_region }}
 
 
