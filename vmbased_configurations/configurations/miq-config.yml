@@ -8,10 +8,12 @@
 #    - include_tasks: reset-default-passwor.yml
 #      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}" 
 
+
 ## All hosts
 - hosts: master_primary_db
   vars:
     ansible_ssh_pass: "{{ cfme_new_root_pw }}"
+    ansible_ssh_user: root
 
   tasks: 
   - name: Set hostname
@@ -30,6 +32,7 @@
 - hosts: master_primary_appliance
   vars:
     ansible_ssh_pass: "{{ cfme_new_root_pw }}"
+    ansible_ssh_user: root
 
   tasks: 
   - name: Set hostname
@@ -48,6 +51,7 @@
 - hosts: master_primary_db
   vars:
     ansible_ssh_pass: "{{ cfme_new_root_pw }}"
+    ansible_ssh_user: root
 
   tasks:
     - name: Reboot
@@ -86,6 +90,7 @@
 - hosts: master_primary_appliance
   vars:
     ansible_ssh_pass: "{{ cfme_new_root_pw }}"
+    ansible_ssh_user: root
 
   tasks:
   - name: Restore default database configuration file
@@ -120,6 +125,7 @@
 - hosts: master_primary_db
   vars:
     ansible_ssh_pass: "{{ cfme_new_root_pw }}"
+    ansible_ssh_user: root
   
   tasks:
   - name: Configure remote database
