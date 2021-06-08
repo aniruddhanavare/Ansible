@@ -24,20 +24,15 @@
       enabled: 'yes'
       state: 'started'
     tags: 'chrony-service'
-    delegate_to: localhost
 
   - name: Dispay Host name
     command: hostname
     register: hostnameMsg
-    delegate_to: localhost
 
   - debug: msg="{{ hostnameMsg }}"
-    delegate_to: localhost
-
 
   - name: Create DIR
     command: mkdir /tmp/test99
-    delegate_to: localhost
 
 
 
