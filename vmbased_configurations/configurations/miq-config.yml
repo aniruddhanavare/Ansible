@@ -1,36 +1,30 @@
-# Ansible playbook that uses appliance_console_cli, plus existing
-# Ansible modules, to provision a freshly deployed CloudForms manageIQ appliance.
-#
+#- hosts: localhost
+#  vars_files:
+#      - group_vars/all/vars.yml
+#  tasks:
+#    - include_tasks: reset-default-passwor.yml
+#      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
+    
+#    - include_tasks: reset-default-passwor.yml
+#      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}" 
 
-# this play performs initial sysadmin for newly created CFME appliances
-# we set a non-default root password, install a public key for ansible,
-
-- hosts: localhost
-  vars_files:
-      - group_vars/all/vars.yml
-  tasks:
-    - include_tasks: reset-default-passwor.yml
-      loop: "{{ query('inventory_hostnames', 'all') }}" 
 
 ## All hosts
-- hosts: all
-  vars:
-    ansible_ssh_pass: "{{ cfme_new_root_pw }}"
+- hosts: localhost
 
   tasks: 
-  - name: Set hostname
-    hostname: 
-      name: "{{ miq_appliance_hostname }}" 
+  - name: SSH and read the file content-123
+    expect:
+      command: ssh  root@169.63.179.101
+      responses:
+        (?i)password: bWFuYWdlaXE=
+        (?i)root@auto-master-vmdb-01: mkdir /tmp/test222 && exit 
+    register: output 
 
-## primary master VMDB appliance
-- hosts: master_primary_db
-  vars:
-    ansible_ssh_pass: "{{ cfme_new_root_pw }}"
+  - name: Printing the output 
+    debug : 
+      msg: '{{ output.stdout }}'      
 
-  tasks:
-    - name: Reboot
-      reboot:
 
-    - name: Enable database server
-      ansible.builtin.shell:
-       cmd: systemctl enable evmserverd
+
+

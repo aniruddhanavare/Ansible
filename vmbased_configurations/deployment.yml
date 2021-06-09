@@ -5,5 +5,20 @@
     - name: Fetch the variables from var file
       include_vars:
         file: configurations/group_vars/all/vars.yml
-   
+    - name: Add host to inventory vmdb
+      add_host:
+        hostname: 169.63.179.101
+        groups: master_primary_db
+        private_ip: 10.241.65.79
+        miq_appliance_hostname: auto-master-vmdb-01
+        miq_cluster_node_number: 2
+        cfme_master_region: 88
+    - name: Add host to inventory UI
+      add_host:
+        hostname: 169.59.160.92
+        groups: master_primary_appliance
+        private_ip: 10.241.65.78
+        miq_appliance_hostname: auto-master-ui-01
+        vmdb_private_ip: 10.241.65.79
+
 - import_playbook: configurations/miq-config.yml 
