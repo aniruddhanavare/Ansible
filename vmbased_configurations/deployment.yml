@@ -7,18 +7,26 @@
         file: configurations/group_vars/all/vars.yml
     - name: Add host to inventory vmdb
       add_host:
-        hostname: 169.63.179.101
-        groups: master_primary_db
+        hostname: 10.241.65.79
+        ansible_host: auto-master-vmdb-01
+        ansible_ssh_user: root
+        ansible_ssh_pass: bWFuYWdlaXE=
+        ansible_become_pass: bWFuYWdlaXE=
         private_ip: 10.241.65.79
         miq_appliance_hostname: auto-master-vmdb-01
         miq_cluster_node_number: 2
         cfme_master_region: 88
+        groups: master_primary_db
     - name: Add host to inventory UI
       add_host:
-        hostname: 169.59.160.92
-        groups: master_primary_appliance
+        hostname: 10.241.65.78
+        ansible_host: auto-master-ui-01
+        ansible_ssh_user: root
+        ansible_ssh_pass: bWFuYWdlaXE=
+        ansible_become_pass: bWFuYWdlaXE=
         private_ip: 10.241.65.78
         miq_appliance_hostname: auto-master-ui-01
         vmdb_private_ip: 10.241.65.79
-
+        groups: master_primary_appliance
+        
 - import_playbook: configurations/miq-config.yml 
