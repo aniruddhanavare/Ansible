@@ -14,17 +14,29 @@
 - hosts: localhost
 
   tasks: 
+  - name: SCP and read the file content-123
+    expect:
+      command: scp config_masterdb.sh root@169.63.179.101:/tmp 
+      responses:
+        (?i)password: bWFuYWdlaXE= 
+        (?i)root@auto: exit
+    register: output
+    delegate_to: localhost
+
   - name: SSH and read the file content-123
     expect:
       command: ssh  root@169.63.179.101
       responses:
         (?i)password: bWFuYWdlaXE=
-        (?i)root@auto: mkdir /tmp/test333 && exit 
-    register: output 
+        (?i)root@auto: sh  /tmp/config_masterdb.sh && exit 
+    register: output1 
 
   - name: Printing the output 
     debug : 
-      msg: '{{ output.stdout }}'      
+      msg: '{{ output1.stdout }}' 
+
+
+     
 
 
 
