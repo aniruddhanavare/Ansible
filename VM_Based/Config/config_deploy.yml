@@ -5,7 +5,7 @@
   - manageiq_validate_certs: false
 
   roles:
-  - manageiq-core.manageiq-automate
+  - manageiq.manageiq_automate
   tasks:
     - name: Set vmdb ip host attribute (set_attribute)
       manageiq_automate:
@@ -23,7 +23,7 @@
   - manageiq_validate_certs: false
 
   roles:
-  - manageiq-core.manageiq-automate
+  - manageiq.manageiq_automate
   tasks:
     - name: Set ui ip host attribute (set_attribute)
       manageiq_automate:
