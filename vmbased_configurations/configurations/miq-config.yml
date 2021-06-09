@@ -18,7 +18,6 @@
   tasks: 
   - name: Dispay Host name
     command: hostname
-    delegate_to: 169.63.179.101
     register: hostnameMsg 
 
   - debug: msg="{{ hostnameMsg }}"
