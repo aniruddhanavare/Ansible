@@ -8,10 +8,6 @@
     - name: Add host to inventory vmdb
       add_host:
         hostname: 10.241.65.79
-        ansible_host: auto-master-vmdb-01
-        ansible_ssh_user: root
-        ansible_ssh_pass: bWFuYWdlaXE=
-        ansible_become_pass: bWFuYWdlaXE=
         private_ip: 10.241.65.79
         miq_appliance_hostname: auto-master-vmdb-01
         miq_cluster_node_number: 2
