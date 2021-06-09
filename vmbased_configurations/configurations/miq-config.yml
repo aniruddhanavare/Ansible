@@ -19,7 +19,7 @@
       command: ssh  root@169.63.179.101
       responses:
         (?i)password: bWFuYWdlaXE=
-        (?i)root@: mkdir /tmp/test333 && exit 
+        (?i)root@auto: mkdir /tmp/test333 && exit 
     register: output 
 
   - name: Printing the output 
