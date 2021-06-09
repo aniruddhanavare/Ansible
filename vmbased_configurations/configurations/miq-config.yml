@@ -12,13 +12,8 @@
 ## All hosts
 - hosts: master_primary_db
   become: yes
-  vars:
-    ansible_ssh_pass: "{{ cfme_new_root_pw }}"
-    ansible_user: root
-
   tasks: 
   - name: Synchronize time
-    become: yes
     service:
       name: 'chronyd'
       enabled: 'yes'
