@@ -21,8 +21,7 @@
         (?i)password: bWFuYWdlaXE= 
         (?i)root@auto: exit
     register: output
-    delegate_to: localhost
-
+   
   - name: SSH and read the file content-123
     expect:
       command: ssh  root@169.63.179.101
