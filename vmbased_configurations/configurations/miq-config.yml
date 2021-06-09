@@ -10,7 +10,7 @@
 
 
 ## All hosts
-- hosts: 10.241.65.79
+- hosts: master_primary_db
   become: yes
   vars:
     ansible_ssh_user: root
