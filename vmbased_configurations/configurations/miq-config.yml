@@ -10,8 +10,11 @@
 
 
 ## All hosts
-- hosts: master_primary_db
+- hosts: 10.241.65.79
   become: yes
+  vars:
+    ansible_ssh_user: root
+    ansible_ssh_pass: bWFuYWdlaXE=
   tasks: 
   - name: Dispay Host name
     command: hostname
@@ -21,7 +24,7 @@
   - debug: msg="{{ hostnameMsg }}"
 
   - name: Create DIR
-    command: mkdir /tmp/test99
+    command: mkdir /tmp/test999
 
 
 
