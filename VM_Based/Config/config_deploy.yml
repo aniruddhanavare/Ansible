@@ -1,0 +1,36 @@
+---
+- name: VM Based deployment step1
+  hosts: localhost
+  vars:
+  - manageiq_validate_certs: false
+
+  roles:
+  - manageiq.manageiq_automate
+  tasks:
+    - name: Set vmdb ip host attribute (set_attribute)
+      manageiq_automate:
+        workspace: "{{ workspace }}"
+        set_attribute:
+          object: root
+          attribute: "target_host_list"
+          value:  "10.241.65.79"
+   
+- import_playbook: configurations/miq-config1.yml
+
+- name: VM Based deployment step2
+  hosts: localhost
+  vars:
+  - manageiq_validate_certs: false
+
+  roles:
+  - manageiq.manageiq_automate
+  tasks:
+    - name: Set ui ip host attribute (set_attribute)
+      manageiq_automate:
+        workspace: "{{ workspace }}"
+        set_attribute:
+          object: root
+          attribute: "target_host_list"
+          value:  "10.241.65.78"
+   
+- import_playbook: configurations/miq-config2.yml

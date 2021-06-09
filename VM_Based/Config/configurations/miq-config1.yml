@@ -1,0 +1,16 @@
+# Ansible playbook that uses appliance_console_cli, plus existing
+# Ansible modules, to provision a freshly deployed CloudForms manageIQ appliance.
+#
+
+# this play performs initial sysadmin for newly created CFME appliances
+# we set a non-default root password, install a public key for ansible,
+
+- hosts: all
+  vars:
+    ansible_ssh_pass: bWFuYWdlaXE=
+    ansible_user: root
+
+  tasks: 
+  - name: Display Host name
+    command: hostname
+    register: hostnameMsg
