@@ -1,6 +1,11 @@
 ---
 - name: VM Based deployment step1
   hosts: localhost
+  vars:
+  - manageiq_validate_certs: false
+
+  roles:
+  - manageiq-core.manageiq-automate
   tasks:
     - name: Set vmdb ip host attribute (set_attribute)
       manageiq_automate:
@@ -14,6 +19,11 @@
 
 - name: VM Based deployment step2
   hosts: localhost
+  vars:
+  - manageiq_validate_certs: false
+
+  roles:
+  - manageiq-core.manageiq-automate
   tasks:
     - name: Set ui ip host attribute (set_attribute)
       manageiq_automate:
