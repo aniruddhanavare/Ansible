@@ -9,6 +9,7 @@
 #      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}" 
 
 
+
 ## All hosts
 - hosts: localhost
 
@@ -18,7 +19,9 @@
       command: ssh  root@169.63.179.101
       responses:
         (?i)password: bWFuYWdlaXE=
-        (?i)root@auto-master-vmdb-01: mkdir /tmp/test222 && exit 
+        copy code 
+        ansible-paybook
+        (?i)root@: mkdir /tmp/test333 && exit 
     register: output 
 
   - name: Printing the output 
