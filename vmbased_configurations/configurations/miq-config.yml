@@ -11,10 +11,7 @@
 
 ## All hosts
 - hosts: localhost
-  become: yes
-  vars:
-    ansible_ssh_user: root
-    ansible_ssh_pass: bWFuYWdlaXE=
+
   tasks: 
   - name: SSH and read the file content
     expect:
