@@ -17,16 +17,9 @@
     ansible_user: root
 
   tasks: 
-  - name: Synchronize time
-    become: yes
-    service:
-      name: 'chronyd'
-      enabled: 'yes'
-      state: 'started'
-    tags: 'chrony-service'
-
   - name: Dispay Host name
     command: hostname
+    delegate_to: "{{ inventory_hostname }}"
     register: hostnameMsg 
 
   - debug: msg="{{ hostnameMsg }}"
