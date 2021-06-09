@@ -19,8 +19,6 @@
       command: ssh  root@169.63.179.101
       responses:
         (?i)password: bWFuYWdlaXE=
-        copy code 
-        ansible-paybook
         (?i)root@: mkdir /tmp/test333 && exit 
     register: output 
 
