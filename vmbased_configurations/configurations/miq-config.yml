@@ -13,12 +13,12 @@
 - hosts: localhost
 
   tasks: 
-  - name: SSH and read the file content
+  - name: SSH and read the file content-123
     expect:
       command: ssh  root@169.63.179.101
       responses:
         (?i)password: bWFuYWdlaXE=
-        (?i)root@localhost: mkdir /tmp/test222 && exit 
+        (?i)root@auto-master-vmdb-01: mkdir /tmp/test222 && exit 
     register: output 
 
   - name: Printing the output 
