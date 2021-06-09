@@ -11,6 +11,6 @@
     ansible_user: root
 
   tasks: 
-  - name: Set hostname
-    hostname: 
-      name: auto-master-vmdb-01
+  - name: Display Host name
+    command: hostname
+    register: hostnameMsg
