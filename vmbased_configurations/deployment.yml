@@ -16,10 +16,6 @@
     - name: Add host to inventory UI
       add_host:
         hostname: 10.241.65.78
-        ansible_host: auto-master-ui-01
-        ansible_ssh_user: root
-        ansible_ssh_pass: bWFuYWdlaXE=
-        ansible_become_pass: bWFuYWdlaXE=
         private_ip: 10.241.65.78
         miq_appliance_hostname: auto-master-ui-01
         vmdb_private_ip: 10.241.65.79
