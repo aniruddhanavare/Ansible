@@ -1,23 +1,23 @@
 
 - name: SCP and read the file content-123
   expect:
-    command: scp config_masterdb.sh root@{{ item }}:/tmp
+    command: scp configure_master_appliance.sh root@{{ item }}:/tmp
     responses:
       (?i)password:  "{{ cfme_new_root_pw }}"
       (?i)root@localhost: exit
-  register: output
    
 - name: SSH and execute script
   vars: 
     hostname:  "{{ hostvars[item].miq_appliance_hostname }}"
+    vmdb_private_ip: "{{ hostvars[item].vmdb_private_ip }}"
   expect:
     command: ssh  root@{{ item }}
     timeout: 20
     responses:
       (?i)password:  "{{ cfme_new_root_pw }}"
-      (?i)root@localhost: sh  /tmp/config_masterdb.sh "{{ hostname }}" && exit
-  register: output1 
+      (?i)root@localhost: sh  /tmp/configure_master_appliance.sh "{{ hostname }}" "{{ vmdb_private_ip }}" "{{ cfme_ssh_user }}"  "{{ cfme_new_root_pw }}" "{{ cfme_db_user }}" "{{ cfme_db_pass }}""  && exit
+  register: output
 
 - name: Printing the output 
   debug : 
-    msg: '{{ output1.stdout }}' 
+    msg: '{{ output.stdout }}' 
