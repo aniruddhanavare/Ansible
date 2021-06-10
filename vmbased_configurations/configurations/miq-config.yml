@@ -1,41 +1,20 @@
-#- hosts: localhost
-#  vars_files:
-#      - group_vars/all/vars.yml
-#  tasks:
+- hosts: localhost
+  vars_files:
+      - group_vars/all/vars.yml
+  tasks:
 #    - include_tasks: reset-default-passwor.yml
 #      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
     
 #    - include_tasks: reset-default-passwor.yml
 #      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}" 
 
+    - include_tasks: configure_miq_appliance.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
+
+    - include_tasks: configure_miq_appliance.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}"
 
 
-## All hosts
-- hosts: localhost
-
-  tasks: 
-  - name: SCP and read the file content-123
-    expect:
-      command: scp config_masterdb.sh root@169.63.179.101:/tmp 
-      responses:
-        (?i)password: bWFuYWdlaXE= 
-        (?i)root@auto: exit
-    register: output
-   
-  - name: SSH and read the file content-123
-    expect:
-      command: ssh  root@169.63.179.101
-      responses:
-        (?i)password: bWFuYWdlaXE=
-        (?i)root@auto: sh  /tmp/config_masterdb.sh && exit 
-    register: output1 
-
-  - name: Printing the output 
-    debug : 
-      msg: '{{ output1.stdout }}' 
-
-
-     
 
 
 
