@@ -5,13 +5,13 @@
 # this play performs initial sysadmin for newly created CFME appliances
 # we set a non-default root password, install a public key for ansible,
 
-hosts: master_primary_db
-tasks:
-  - name: Display Host name
-    command: hostname
-    register: hostnameMsg 
-  
-  - debug: msg="{{ hostnameMsg }}"
+- hosts: master_primary_db
+  tasks:
+    - name: Display Host name
+      command: hostname
+      register: hostnameMsg 
     
-  - name: Create DIR
-    command: mkdir /tmp/test99
+    - debug: msg="{{ hostnameMsg }}"
+      
+    - name: Create DIR
+      command: mkdir /tmp/test99
