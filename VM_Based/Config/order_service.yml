@@ -1,0 +1,35 @@
+---
+- name: Order the service
+  uri:
+    url: "https://{{cfme_appliance}}/api/service_catalogs/{{service_catalog_id}}/service_templates"
+    method: POST
+    body_format: json
+    body:
+      action: order
+      resource:
+        href: "https://{{cfme_appliance}}/api/service_templates/{{service_template_id}}"
+        dialog_credential: "{{credential.json.resources[0].id}}"
+        dialog_hosts: "{{item}}"
+    validate_certs: no
+    headers:
+      X-Auth-Token: "{{ manageiq.json.auth_token }}"
+    status_code: 200
+  register: service_item
+
+- name: Save the request id fact
+  set_fact:
+    cacheable: True
+    request_id: "{{ service_item.json.resources[0].id}}"
+
+- name: Track the order
+  uri:
+    url: "https://{{cfme_appliance}}/api/service_requests/{{request_id}}?expand=request_tasks"
+    method: GET
+    validate_certs: no
+    headers:
+      X-Auth-Token: "{{ manageiq.json.auth_token }}"
+    status_code: 200
+  register: service_tracking
+  until: service_tracking.json.status == "Ok" and service_tracking.json.request_state == "finished"
+  retries: 30
+  delay: 1
