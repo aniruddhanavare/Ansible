@@ -14,4 +14,4 @@
     - debug: msg="{{ hostnameMsg }}"
       
     - name: Create DIR
-      command: mkdir /tmp/test99
+      command: mkdir /tmp/test12345
