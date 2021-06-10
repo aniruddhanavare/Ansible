@@ -5,12 +5,7 @@
 # this play performs initial sysadmin for newly created CFME appliances
 # we set a non-default root password, install a public key for ansible,
 
-- hosts: master_primary_db
-  become: yes
-  vars:
-    ansible_ssh_pass: bWFuYWdlaXE=
-    ansible_user: root
-    ansible_connection: ssh
+- hosts: all
   tasks:
     - name: Display Host name
       command: hostname
