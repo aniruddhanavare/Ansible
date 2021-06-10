@@ -19,7 +19,7 @@
 - name: Save the request id fact
   set_fact:
     cacheable: True
-    request_id: "{{ service_item.json.resources[0].id}}"
+    request_id: "{{ service_item.json.results[0].id}}"
 
 - name: Track the order
   uri:
