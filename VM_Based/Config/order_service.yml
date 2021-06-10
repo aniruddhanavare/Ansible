@@ -31,5 +31,5 @@
     status_code: 200
   register: service_tracking
   until: service_tracking.json.status == "Ok" and service_tracking.json.request_state == "finished"
-  retries: 30
-  delay: 1
+  retries: 50
+  delay: 10
