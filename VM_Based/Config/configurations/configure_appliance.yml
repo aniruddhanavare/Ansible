@@ -1,0 +1,48 @@
+# Ansible playbook that uses appliance_console_cli, plus existing
+# Ansible modules, to provision a freshly deployed CloudForms manageIQ appliance.
+#
+
+# this play performs initial sysadmin for newly created CFME appliances
+# we set a non-default root password, install a public key for ansible,
+
+- hosts: all
+  tasks: 
+  - name : Reset password for {{ miq_appliance_hostname }}
+    include_tasks: reset-default-password.yml
+
+  - name: Set hostname
+    hostname: 
+      name: "{{ miq_appliance_hostname }}" 
+
+  - name: Synchronize time
+    become: yes
+    service:
+      name: 'chronyd'
+      enabled: 'yes'
+      state: 'started'
+    tags: 'chrony-service'
+
+  - name: Restore default database configuration file
+    command: " {{ item }} "
+    with_items: 
+      - cd {{ cfme_vmdb_default_folder }}
+      - \cp {{ cfme_vmdb_default_folder }}/config/database.pg.yml {{ cfme_vmdb_default_folder }}/config/database.yml
+  
+  - name: Configure remote database
+    block:
+    - name: Fetch remote encryption key
+      shell: >
+        appliance_console_cli
+        --fetch-key={{ vmdb_private_ip }}
+        --sshlogin=root
+        --sshpassword="{{ cfme_new_root_pw }}"
+    - name: Connect to external region in database
+      shell: >
+        appliance_console_cli
+        --hostname={{ vmdb_private_ip }}
+        --username={{ cfme_db_user }}
+        --password={{ cfme_db_pass }}
+      
+    - name: Reboot
+      reboot:
+

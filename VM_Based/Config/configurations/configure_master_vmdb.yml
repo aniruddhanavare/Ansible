@@ -7,6 +7,9 @@
 
 - hosts: all
   tasks: 
+  - name : Reset password for {{ miq_appliance_hostname }}
+    include_tasks: reset-default-password.yml
+
   - name: Set hostname
     hostname: 
       name: "{{ miq_appliance_hostname }}" 
@@ -18,9 +21,6 @@
       enabled: 'yes'
       state: 'started'
     tags: 'chrony-service'
-
-  - name: Reboot
-    reboot:
 
   - name: Restore default database configuration file
     command: " {{ item }} "
@@ -55,6 +55,7 @@
       --replication={{ replication_type }}
       --primary-host={{ miq_private_ip }}
       --cluster-node-number={{ miq_cluster_node_number }}
+      --auto-failover
       --username={{ cfme_db_user }}
       --password={{ cfme_db_pass }}
 
