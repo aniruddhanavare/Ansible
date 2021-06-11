@@ -1,0 +1,29 @@
+- name: Check if ssl entry is already defined
+  lineinfile:
+    state: absent
+    path: "/var/lib/pgsql/data/pg_hba.conf"
+    regexp: "host all all {{ cfme_vpc_ip_range }} md5"
+  check_mode: true
+  changed_when: false 
+  register: sslcheck
+
+- name: add SSL entry
+  lineinfile:
+    dest: /var/lib/pgsql/data/pg_hba.conf
+    line: host all all {{ cfme_vpc_ip_range }} md5
+  when: sslcheck.found == 0
+    
+- name: Check if NoSSL entry is already defined
+  lineinfile:
+    state: absent
+    path: "/var/lib/pgsql/data/pg_hba.conf"
+    regexp: "hostnossl all all {{ cfme_vpc_ip_range }} md5"
+  check_mode: true
+  changed_when: false
+  register: nosslcheck
+
+- name: add NoSSL entry
+  lineinfile:
+    dest: /var/lib/pgsql/data/pg_hba.conf
+    line: hostnossl all all {{ cfme_vpc_ip_range }} md5
+  when: nosslcheck.found == 0

@@ -10,10 +10,17 @@
       add_host:
         name: 10.241.65.79
         private_ip: 10.241.65.79
-        miq_appliance_hostname: auto-master-vmdb-01
-        miq_cluster_node_number: 2
-        cfme_master_region: 88
+        miq_appliance_hostname: automation-manageiq-master-vmdb-01
+        miq_cluster_node_number: 11
+        miq_region: 77
+        primary_host_ip: 10.241.65.79
+        replication_type: primary
+        miq_db_disk: /dev/vdd
         groups: master_primary_db
+
+    - name : Reset password for inventory hosts
+      include_tasks: reset-default-password.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}"
 
     - name: Generate Auth token
       uri:

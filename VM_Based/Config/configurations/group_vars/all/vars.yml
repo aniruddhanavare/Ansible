@@ -10,7 +10,7 @@ cfme_appliance_password: smartvm
 cfme_appliance: 169.59.163.84
 cfme_credential_name: master-vmdb
 cfme_catalog_name: IBM_Cloud_Catalogs
-cfme_vmdb_template_name: Create_directory
+cfme_vmdb_template_name: Configure_VMDB_Appliance
 
 cfme_default_root_pw: smartvm 
 cfme_new_root_pw: bWFuYWdlaXE=

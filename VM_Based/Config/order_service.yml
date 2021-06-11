@@ -10,6 +10,11 @@
         href: "https://{{cfme_appliance}}/api/service_templates/{{service_template_id}}"
         dialog_credential: "{{credential.json.resources[0].id}}"
         dialog_hosts: "{{item}}"
+        dialog_param_miq_appliance_hostname: "{{ hostvars[item].miq_appliance_hostname }}"
+        dialog_param_miq_region: "{{ hostvars[item].miq_region }}"
+        dialog_param_miq_private_ip: "{{hostvars[item].private_ip}}"
+        dialog_param_replication_type: "{{hostvars[item].replication_type}}"
+        dialog_param_miq_cluster_node_number: "{{hostvars[item].miq_cluster_node_number}}"
     validate_certs: no
     headers:
       X-Auth-Token: "{{ manageiq_auth.json.auth_token }}"
@@ -31,5 +36,5 @@
     status_code: 200
   register: service_tracking
   until: service_tracking.json.status == "Ok" and service_tracking.json.request_state == "finished"
-  retries: 50
-  delay: 40
+  retries: 150
+  delay: 50
