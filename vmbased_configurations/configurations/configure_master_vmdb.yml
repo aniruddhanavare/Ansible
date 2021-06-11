@@ -1,0 +1,23 @@
+
+- name: SCP and read the file content-123
+  expect:
+    command: scp configure_master_vmdb.sh root@{{ item }}:/tmp
+    responses:
+      (?i)password:  "{{ cfme_new_root_pw }}"
+      (?i)root@localhost: exit
+    
+- name: SSH and execute script
+  vars: 
+    hostname:  "{{ hostvars[item].miq_appliance_hostname }}"
+    miq_region: "{{ hostvars[item].cfme_master_region }}"
+  expect:
+    command: ssh  root@{{ item }}
+    timeout: 20
+    responses:
+      (?i)password:  "{{ cfme_new_root_pw }}"
+      (?i)root@localhost: sh  /tmp/configure_master_vmdb.sh "{{ hostname }}" "{{ miq_region }}" "{{ cfme_vpc_ip_range }}"  && exit
+  register: output
+
+- name: Printing the output 
+  debug : 
+    msg: '{{ output.stdout }}' 
