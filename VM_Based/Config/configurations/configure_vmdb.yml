@@ -76,8 +76,8 @@
 
     - name: Reset configured database
       ansible.builtin.shell:
-      chdir: "{{ cfme_vmdb_default_folder }}"
-      cmd: DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rake evm:db:region -- --region={{ miq_region }}
+        chdir: "{{ cfme_vmdb_default_folder }}"
+        cmd: DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rake evm:db:region -- --region={{ miq_region }}
 
     - name: Restart database service
       command: " {{ item }} "
