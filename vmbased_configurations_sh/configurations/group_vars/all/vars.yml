@@ -1,0 +1,25 @@
+---
+provider: ibmcloud
+name_prefix: manageiq-automation
+
+#vm credentials
+cfme_ssh_user: root
+
+
+cfme_default_root_pw: smartvm
+
+cfme_new_root_pw: bWFuYWdlaXE=
+
+
+
+
+#database credentials
+cfme_db_user: root
+cfme_db_pass: smartvm
+
+#vpc subnet ip range
+cfme_vpc_ip_range: 10.241.0.0/24
+
+#vmdb default folder path
+cfme_vmdb_default_folder: /var/www/miq/vmdb
+timeout_var: 20
