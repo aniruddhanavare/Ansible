@@ -2,8 +2,8 @@
   vars_files:
       - group_vars/all/vars.yml
   tasks:
-    - include_tasks: reset-default-passwor.yml
-      loop: "{{ query('inventory_hostnames', 'all') }}" 
+#    - include_tasks: reset-default-passwor.yml
+#      loop: "{{ query('inventory_hostnames', 'all') }}" 
    
     - include_tasks: configure_miq_appliance.yml
       vars:
