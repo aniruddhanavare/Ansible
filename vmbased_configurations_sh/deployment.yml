@@ -23,4 +23,4 @@
         miq_appliance_hostname: auto-master-ui-01
         vmdb_private_ip: 10.241.65.119
 
-- import_playbook: configurations/miq-config.yml 
+- import_playbook: configurations/miq-config-test.yml 
