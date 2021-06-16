@@ -6,10 +6,7 @@
 # we set a non-default root password, install a public key for ansible,
 
 - hosts: all
-  tasks: 
-  - name : Reset password for {{ miq_appliance_hostname }}
-    include_tasks: reset-default-password.yml
-
+  tasks:
   - name: Set hostname
     hostname: 
       name: "{{ miq_appliance_hostname }}" 
