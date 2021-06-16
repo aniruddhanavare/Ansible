@@ -1,0 +1,31 @@
+#task1 to check if we can ping the server
+- name: Ping the server to check connectivity
+  command: 'ping -c 5 {{ item }}'
+  register: pingResp  
+  ignore_errors: True
+#Just checking if we are getting response   
+
+#task2 to ssh into the VM and change the password 
+- name: Change password on first login
+
+  #Using the expect module to give the parameters required by vm in runtime as per the matching pattern 
+  expect:
+
+    #Using command module to ssh in to the vm and to follow the procedure to change the VM pass 
+    command: ssh   -o StrictHostKeyChecking=no {{ cfme_ssh_user }}@{{ item }}
+    timeout: "{{ timeout_var }}"
+    
+    #using different patterns to respond with most correct variable/response
+    responses:
+      (?m)^(?s)Are\syou\ssure\syou\swant* : "yes"
+      (?i)root@ :  "{{ cfme_default_root_pw }}"
+      (?i)New\spass* : "{{ cfme_new_root_pw }}"
+      (?i)Retype\spass* : "{{ cfme_new_root_pw }}"
+  #Storing the result of above task 
+  register: status
+  ignore_errors: yes
+  when: pingResp.failed == false or 'Permission denied' in status.stdout_lines
+
+#- debug:
+#    msg:  Check if the password is already reset.  
+#  when: status.failed == true

@@ -1,0 +1,47 @@
+- hosts: localhost
+  vars_files:
+      - group_vars/all/vars.yml
+  tasks:
+    - include_tasks: reset-default-passwor.yml
+      loop: "{{ query('inventory_hostnames', 'all') }}" 
+   
+    - include_tasks: configure_miq_appliance.yml
+      vars:
+        args: "{{ hostvars[item].miq_appliance_hostname }}  {{ hostvars[item].cfme_master_region }} {{ cfme_vpc_ip_range }} {{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }}"
+        script_file_name: configure_master_vmdb.sh
+      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
+
+
+    - include_tasks: configure_miq_appliance.yml
+      vars:
+        args: "{{ hostvars[item].miq_appliance_hostname }}  {{ hostvars[item].vmdb_private_ip }}  {{ cfme_ssh_user }}  {{ cfme_new_root_pw }} {{ cfme_db_user }} {{ cfme_db_pass }}"
+        script_file_name: configure_appliance.sh
+      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}"
+
+
+
+#############################################################   IPOST UI STEPS 
+#    - include_tasks: configure_miq_appliance.yml
+#      vars:
+#        args: "{{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }}"
+#        script_file_name: post_configure_master_vmdb.sh
+#      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}"
+#      ignore_errors: yes
+#############################################################
+
+
+
+#Configute sandby and worker setup
+
+    - include_tasks: configure_miq_appliance.yml
+      vars:
+        args: "{{ hostvars[item].miq_appliance_hostname }}  {{ hostvars[item].cfme_master_region }}  {{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }}  {{ hostvars[item].primary_host_ip }}  {{ cfme_ssh_user }} {{cfme_new_root_pw}} {{ hostvars[item].miq_db_disk }}"
+        script_file_name: configure_vmdb.sh
+      loop: "{{ query('inventory_hostnames', 'vmdb_appliance') }}" 
+
+
+    - include_tasks: configure_miq_appliance.yml
+      vars:
+        args: "{{ hostvars[item].miq_appliance_hostname }}  {{ hostvars[item].vmdb_private_ip }}  {{ cfme_ssh_user }}  {{ cfme_new_root_pw }} {{ cfme_db_user }} {{ cfme_db_pass }}"
+        script_file_name: configure_appliance.sh
+      loop: "{{ query('inventory_hostnames', 'ui_appliance') }}"

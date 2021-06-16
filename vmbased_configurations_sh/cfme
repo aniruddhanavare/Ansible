@@ -1,0 +1,6 @@
+
+[master_primary_db]
+169.63.177.86    private_ip=10.241.65.74   miq_appliance_hostname=auto-master-vmdb-01  miq_cluster_node_number=2   cfme_master_region=88   replication_type=primary
+
+[master_primary_appliances]
+169.63.180.218   private_ip=10.241.65.73   miq_appliance_hostname=auto-master-ui-01  vmdb_private_ip=10.241.65.74 
