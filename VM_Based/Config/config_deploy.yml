@@ -85,7 +85,7 @@
         service_catalog_id: "{{ service_catalog.json.resources[0].id}}"
 
     - name : Configure Master VMDB
-      include_tasks: order_service.yml
+      include_tasks: order_vmdb_service.yml
       vars:
         template_name: Configure_Master_VMDB
       loop: "{{ query('inventory_hostnames', 'master_primary_db') }}"
@@ -97,9 +97,9 @@
       loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}"
 
     - name : Configure VMDBs
-      include_tasks: order_service.yml
+      include_tasks: order_vmdb_service.yml
       vars:
-        template_name: Configure_VMDB
+        template_name: Configure_Master_VMDB
       loop: "{{ query('inventory_hostnames', 'vmdb_appliance') }}"
 
     - name : Configure Appliances

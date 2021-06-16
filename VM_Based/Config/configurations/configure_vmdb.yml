@@ -29,10 +29,6 @@
         - systemctl stop evmserverd
         - cd {{ cfme_vmdb_default_folder }}
         - \cp {{ cfme_vmdb_default_folder }}/config/database.pg.yml {{ cfme_vmdb_default_folder }}/config/database.yml
-        #- systemctl stop $APPLIANCE_PG_SERVICE
-        #- systemctl disable $APPLIANCE_PG_SERVICE
-        #- systemctl enable $APPLIANCE_PG_SERVICE
-        #- systemctl start $APPLIANCE_PG_SERVICE
         - systemctl restart $APPLIANCE_PG_SERVICE
         - su - postgres -c "dropdb  -U root  vmdb_production --if-exists"
     
