@@ -8,42 +8,44 @@
 
     - name: Add master vmdb host inventory
       add_host:
-        name: 10.241.65.79
-        private_ip: 10.241.65.79
-        miq_appliance_hostname: automation-manageiq-master-vmdb-01
+        name: 10.241.64.23
+        private_ip: 10.241.64.23
+        miq_appliance_hostname: automation-manageiq-master-vmdb-1
         miq_cluster_node_number: 11
         miq_region: 77
-        primary_host_ip: 10.241.65.79
+        primary_host_ip: 10.241.64.23
         replication_type: primary
-        miq_db_disk: /dev/vdd
+        miq_db_disk: /dev/vdb
+        node: master
         groups: master_primary_db
 
     - name: Add master ui host inventory
       add_host:
-        name: 10.241.65.79
-        private_ip: 10.241.65.79
-        miq_appliance_hostname: automation-manageiq-master-ui-01
-        vmdb_private_ip: 10.241.65.79
+        name: 10.241.64.24
+        private_ip: 10.241.64.24
+        miq_appliance_hostname: automation-manageiq-master-ui-1
+        vmdb_private_ip: 10.241.64.23
         groups: master_primary_appliance
 
     - name: Add other vmdb host inventory
       add_host:
-        name: 10.241.65.79
-        private_ip: 10.241.65.79
-        miq_appliance_hostname: automation-manageiq-master-vmdb-02
-        miq_cluster_node_number: 11
+        name: 10.241.129.15
+        private_ip: 10.241.129.15
+        miq_appliance_hostname: automation-manageiq-master-vmdb-2
+        miq_cluster_node_number: 12
         miq_region: 77
-        primary_host_ip: 10.241.65.79
+        primary_host_ip: 10.241.64.23
         replication_type: primary
-        miq_db_disk: /dev/vdd
+        miq_db_disk: /dev/vdb
+        node: master
         groups: vmdb_appliance
 
     - name: Add other ui host inventory
       add_host:
-        name: 10.241.65.79
-        private_ip: 10.241.65.79
-        miq_appliance_hostname: automation-manageiq-master-ui-02
-        vmdb_private_ip: 10.241.65.79
+        name: 10.241.129.16
+        private_ip: 10.241.129.16
+        miq_appliance_hostname: automation-manageiq-master-ui-2
+        vmdb_private_ip: 10.241.64.23
         groups: appliance
 
     - include_tasks: reset-default-password.yml
@@ -96,14 +98,14 @@
         cacheable: True
         service_catalog_id: "{{ service_catalog.json.resources[0].id}}"
 
-    - name : Configure Master VMDB
+    - name : Configure Master Primary VMDB
       include_tasks: order_vmdb_service.yml
       vars:
         template_name: Configure_Master_VMDB
       loop: "{{ query('inventory_hostnames', 'master_primary_db') }}"
 
-    - name : Configure Master UI
-      include_tasks: order_service.yml
+    - name : Configure Master Primary UI
+      include_tasks: order_appliance_service.yml
       vars:
         template_name: Configure_Appliance
       loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}"
@@ -115,7 +117,7 @@
       loop: "{{ query('inventory_hostnames', 'vmdb_appliance') }}"
 
     - name : Configure Appliances
-      include_tasks: order_service.yml
+      include_tasks: order_appliance_service.yml
       vars:
         template_name: Configure_Appliance
       loop: "{{ query('inventory_hostnames', 'appliance') }}"

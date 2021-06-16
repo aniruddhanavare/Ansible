@@ -5,17 +5,8 @@ name_prefix: manageiq-automation
 #vm credentials
 cfme_ssh_user: root
 
-cfme_appliance_username: admin
-cfme_appliance_password: smartvm
-cfme_appliance: 169.59.163.84
-cfme_credential_name: master-vmdb
-cfme_catalog_name: IBM_Cloud_Catalogs
-
 cfme_default_root_pw: smartvm 
 cfme_new_root_pw: bWFuYWdlaXE=
-
-
-
 
 #database credentials
 cfme_db_user: root

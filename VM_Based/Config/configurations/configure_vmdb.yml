@@ -81,9 +81,6 @@
     when: (node == "master" and replication_type == "standby") or 
           (node == "worker")
 
-  - name: Reboot
-    reboot:
-
   - name: Configure database replication
     shell: >
       appliance_console_cli
@@ -101,4 +98,7 @@
     register: repmgrCluster  
 
   - debug: msg="{{ repmgrCluster.stdout_lines }}"
+
+  - name: Reboot
+    reboot:
 
