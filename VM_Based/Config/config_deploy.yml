@@ -6,14 +6,45 @@
       include_vars:
         file: configurations/group_vars/all/vars.yml
 
-    - name: Add host to inventory vmdb
+    - name: Add master vmdb host inventory
       add_host:
         name: 10.241.65.79
         private_ip: 10.241.65.79
-        miq_appliance_hostname: auto-master-vmdb-01
-        miq_cluster_node_number: 2
-        cfme_master_region: 88
+        miq_appliance_hostname: automation-manageiq-master-vmdb-01
+        miq_cluster_node_number: 11
+        miq_region: 77
+        primary_host_ip: 10.241.65.79
+        replication_type: primary
+        miq_db_disk: /dev/vdd
         groups: master_primary_db
+
+    - name: Add master ui host inventory
+      add_host:
+        name: 10.241.65.79
+        private_ip: 10.241.65.79
+        miq_appliance_hostname: automation-manageiq-master-ui-01
+        vmdb_private_ip: 10.241.65.79
+        groups: master_primary_appliance
+
+    - name: Add other vmdb host inventory
+      add_host:
+        name: 10.241.65.79
+        private_ip: 10.241.65.79
+        miq_appliance_hostname: automation-manageiq-master-vmdb-02
+        miq_cluster_node_number: 11
+        miq_region: 77
+        primary_host_ip: 10.241.65.79
+        replication_type: primary
+        miq_db_disk: /dev/vdd
+        groups: vmdb_appliance
+
+    - name: Add other ui host inventory
+      add_host:
+        name: 10.241.65.79
+        private_ip: 10.241.65.79
+        miq_appliance_hostname: automation-manageiq-master-ui-02
+        vmdb_private_ip: 10.241.65.79
+        groups: appliance
 
     - name: Generate Auth token
       uri:
@@ -53,24 +84,28 @@
         cacheable: True
         service_catalog_id: "{{ service_catalog.json.resources[0].id}}"
 
-    - name: Get the service template for vmdb
-      uri:
-        url: "https://{{cfme_appliance}}/api/service_templates?expand=resources&filter[]=name={{cfme_vmdb_template_name}}"
-        method: GET
-        validate_certs: no
-        headers:
-          X-Auth-Token: "{{ manageiq_auth.json.auth_token }}"
-        body_format: json
-        status_code: 200
-      register: service_template
-
-    - name: Save the service template id fact
-      set_fact:
-        cacheable: True
-        service_template_id: "{{ service_template.json.resources[0].id}}"
-
-    - name : Configure VMDB Appliances
-      include_tasks: order_service.yml
+    - name : Configure Master VMDB
+      include_tasks: order_vmdb_service.yml
+      vars:
+        template_name: Configure_Master_VMDB
       loop: "{{ query('inventory_hostnames', 'master_primary_db') }}"
+
+    - name : Configure Master UI
+      include_tasks: order_service.yml
+      vars:
+        template_name: Configure_Appliance
+      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}"
+
+    - name : Configure VMDBs
+      include_tasks: order_vmdb_service.yml
+      vars:
+        template_name: Configure_Master_VMDB
+      loop: "{{ query('inventory_hostnames', 'vmdb_appliance') }}"
+
+    - name : Configure Appliances
+      include_tasks: order_service.yml
+      vars:
+        template_name: Configure_Appliance
+      loop: "{{ query('inventory_hostnames', 'appliance') }}"
 
         
