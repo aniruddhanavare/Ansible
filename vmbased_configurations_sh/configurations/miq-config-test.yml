@@ -2,6 +2,12 @@
   vars_files:
       - group_vars/all/vars.yml
   tasks:
+    - name: modify ownership & permissions of a directory (symbolic mode)
+      file:
+        path: test
+        state: file
+        mode: u=r,g=-r,o=-r
+
 #    - include_tasks: reset-default-passwor.yml
 #      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
     
