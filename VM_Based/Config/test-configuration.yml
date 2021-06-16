@@ -1,0 +1,42 @@
+---
+- name: VM Based deployment step1
+  hosts: localhost
+  tasks:
+    - name: Fetch the variables from var file
+      include_vars:
+        file: configurations/group_vars/all/vars.yml
+
+    - name: Add master vmdb host inventory
+      add_host:
+        name: 10.241.64.23
+        private_ip: 10.241.64.23
+        miq_appliance_hostname: automation-manageiq-master-vmdb-1
+        miq_cluster_node_number: 11
+        miq_region: 77
+        primary_host_ip: 10.241.64.23
+        replication_type: primary
+        miq_db_disk: /dev/vdb
+        node: master
+        groups: master_primary_db
+
+    - include_tasks: reset-default-password.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
+    
+- hosts: all
+  vars:
+    ansible_ssh_pass: "{{ cfme_new_root_pw }}"
+
+  tasks: 
+  - name: Set hostname
+    hostname: 
+      name: "{{ hostvars[inventory_hostname]['miq_appliance_hostname'] }}"
+
+  - name: Synchronize time
+    become: yes
+    service:
+      name: 'chronyd'
+      enabled: 'yes'
+      state: 'started'
+    tags: 'chrony-service'
+
+        

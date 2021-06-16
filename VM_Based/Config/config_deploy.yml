@@ -48,6 +48,18 @@
         vmdb_private_ip: 10.241.64.23
         groups: appliance
 
+    - include_tasks: reset-default-password.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
+    
+    - include_tasks: reset-default-password.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}"
+
+    - include_tasks: reset-default-password.yml
+      loop: "{{ query('inventory_hostnames', 'vmdb_appliance') }}" 
+    
+    - include_tasks: reset-default-password.yml
+      loop: "{{ query('inventory_hostnames', 'appliance') }}"
+
     - name: Generate Auth token
       uri:
         url: "https://{{cfme_appliance}}/api/auth"
