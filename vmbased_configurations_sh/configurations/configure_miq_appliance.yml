@@ -17,7 +17,7 @@
     responses:
       #(?i)password:  "{{ cfme_new_root_pw }}"
       #(?i)root@localhost: sh  /tmp/config_masterdb.sh "{{ hostname }}" && exit
-      (?i)root@localhost: sh /tmp/configure_master_vmdb.sh  {{ args }} && reboot  && exit
+      (?i)root@localhost: sh /tmp/"{{ script_file_name }}" {{ args }} && reboot  && exit
   register: output1 
 
 - name: Printing the output 
