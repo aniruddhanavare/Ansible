@@ -1,11 +1,11 @@
 - name: SCP and read the file content-123
   expect:
     #command: scp config_masterdb.sh root@{{ item }}:/tmp
-    command: scp  -o StrictHostKeyChecking=no  {{ script_file_name }} root@{{ item }}:/tmp
-    responses:
-      (?i)password:  "{{ cfme_new_root_pw }}"
-      (?i)root@localhost: exit
-  register: output
+    command: scp  -o StrictHostKeyChecking=no -i ibmkey {{ script_file_name }} root@{{ item }}:/tmp
+#    responses:
+#      (?i)password:  "{{ cfme_new_root_pw }}"
+#      (?i)root@localhost: exit
+#  register: output
    
 - name: SSH and execute script
   vars: 
