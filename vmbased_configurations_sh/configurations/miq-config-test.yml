@@ -11,9 +11,11 @@
     - include_tasks: configure_miq_appliance.yml
       vars:
         script_file_name: configure_master_vmdb.sh
+        args: "{{ hostvars[item].miq_appliance_hostname }}  {{ hostvars[item].cfme_master_region }} {{ cfme_vpc_ip_range }} {{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }}"
       loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
 
     - include_tasks: configure_miq_appliance.yml
       vars:
         script_file_name: configure_master_vmdb.sh
+        args: "{{ hostvars[item].miq_appliance_hostname }}  {{ hostvars[item].vmdb_private_ip }}  {{ cfme_ssh_user }}  {{ cfme_new_root_pw }} {{ cfme_db_user }} {{ cfme_db_pass }}"
       loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}"
