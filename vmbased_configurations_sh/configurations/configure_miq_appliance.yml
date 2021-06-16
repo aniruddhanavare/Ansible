@@ -15,7 +15,7 @@
     command: ssh   -o StrictHostKeyChecking=no -i  ./ibmkey root@{{ item }}
     timeout: 20
     responses:
-      (?i)password:  "{{ cfme_new_root_pw }}"
+      #(?i)password:  "{{ cfme_new_root_pw }}"
       #(?i)root@localhost: sh  /tmp/config_masterdb.sh "{{ hostname }}" && exit
       (?i)root@localhost: sh /tmp/"{{script_file_name}}"  {{ args }} && reboot  && exit
   register: output1 
