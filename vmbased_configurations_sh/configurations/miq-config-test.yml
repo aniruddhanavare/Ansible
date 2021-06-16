@@ -2,9 +2,9 @@
   vars_files:
       - group_vars/all/vars.yml
   tasks:
-    - name: modify ownership & permissions of a directory (symbolic mode)
+    - name: Change permission on private key file
       file:
-        path: test
+        path: ibmkey
         state: file
         mode: u=r,g=-r,o=-r
 
