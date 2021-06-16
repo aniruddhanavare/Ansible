@@ -43,3 +43,7 @@
     - name: Reboot
       reboot:
 
+    - name: Start Database Failover
+      service:
+        name: evm-failover-monitor
+        state: started
