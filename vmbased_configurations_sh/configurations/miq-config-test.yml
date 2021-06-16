@@ -1,0 +1,15 @@
+- hosts: localhost
+  vars_files:
+      - group_vars/all/vars.yml
+  tasks:
+#    - include_tasks: reset-default-passwor.yml
+#      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
+    
+#    - include_tasks: reset-default-passwor.yml
+#      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}" 
+
+    - include_tasks: configure_miq_appliance.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
+
+    - include_tasks: configure_miq_appliance.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}"

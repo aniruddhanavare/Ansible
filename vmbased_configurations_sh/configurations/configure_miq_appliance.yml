@@ -1,21 +1,24 @@
-
-- name: SCP  script file to host vm
-  command: scp  -o StrictHostKeyChecking=no -i ibmkey {{ script_file_name }} root@{{ item }}:/tmp
-
+- name: SCP and read the file content-123
+  expect:
+    #command: scp config_masterdb.sh root@{{ item }}:/tmp
+    command: scp  -o StrictHostKeyChecking=no -i ibmkey config_masterdb.sh root@{{ item }}:/tmp
+    responses:
+      (?i)password:  "{{ cfme_new_root_pw }}"
+      (?i)root@localhost: exit
+  register: output
+   
 - name: SSH and execute script
   vars: 
+    hostname:  "{{ hostvars[item].miq_appliance_hostname }}"
   expect:
+    #command: ssh  root@{{ item }}
     command: ssh   -o StrictHostKeyChecking=no -i  ./ibmkey root@{{ item }}
-    timeout: 1000000
+    timeout: 20
     responses:
-      (?i)root@localhost: sh /tmp/"{{script_file_name}}"  {{ args }} && reboot  && exit
-      #(?i)root@localhost: reboot  && exit
-      #(?i)root@localhost: sh /tmp/"{{script_file_name}}"  "{{ hostname }}" "{{ miq_region }}" "{{ cfme_vpc_ip_range }}"  && exit
-  register: output
-  ignore_errors: yes
-  changed_when:
-  - '"Connection" in output.stdout'
+      (?i)password:  "{{ cfme_new_root_pw }}"
+      (?i)root@localhost: sh  /tmp/config_masterdb.sh "{{ hostname }}" && exit
+  register: output1 
 
 - name: Printing the output 
   debug : 
-    msg: '{{ output.stdout }}' 
+    msg: '{{ output1.stdout }}' 
