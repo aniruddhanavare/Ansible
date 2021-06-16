@@ -7,18 +7,20 @@
         file: configurations/group_vars/all/vars.yml
     - name: Add host to inventory vmdb
       add_host:
-        hostname: 10.241.65.80
+        hostname: 10.241.65.119
+        #hostname: 169.63.177.86
         groups: master_primary_db
-        private_ip: 10.241.65.80
+        private_ip: 10.241.65.119
         miq_appliance_hostname: auto-master-vmdb-01
         miq_cluster_node_number: 2
         cfme_master_region: 88
     - name: Add host to inventory UI
       add_host:
-        hostname: 10.241.65.81
+        hostname: 10.241.65.118
+        #hostname: 169.63.180.218
         groups: master_primary_appliance
-        private_ip: 10.241.65.81
+        private_ip: 10.241.65.118
         miq_appliance_hostname: auto-master-ui-01
-        vmdb_private_ip: 10.241.65.80
+        vmdb_private_ip: 10.241.65.119
 
-- import_playbook: configurations/miq-config.yml 
+- import_playbook: configurations/miq-config-test.yml 
