@@ -12,12 +12,12 @@
     hostname:  "{{ hostvars[item].miq_appliance_hostname }}"
   expect:
     #command: ssh  root@{{ item }}
-    command: ssh   -o StrictHostKeyChecking=no -i  ./ibmkey root@{{ item }}
+    command: ssh   -o StrictHostKeyChecking=no -i  ibmkey root@{{ item }}
     timeout: 20
     responses:
       #(?i)password:  "{{ cfme_new_root_pw }}"
       #(?i)root@localhost: sh  /tmp/config_masterdb.sh "{{ hostname }}" && exit
-      (?i)root@localhost: sh /tmp/"{{script_file_name}}"  {{ args }} && reboot  && exit
+      (?i)root@localhost: sh /tmp/configure_master_vmdb.sh  {{ args }} && reboot  && exit
   register: output1 
 
 - name: Printing the output 
