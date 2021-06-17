@@ -1,7 +1,7 @@
 - name: SCP and read the file content on {{ item }}
   expect:
     #command: scp config_masterdb.sh root@{{ item }}:/tmp
-    command: scp  -o StrictHostKeyChecking=no -i ibmkey {{ script_file_name }} root@{{ item }}:/tmp
+    command: scp  -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i ibmkey {{ script_file_name }} root@{{ item }}:/tmp
     responses:
 #      (?i)password:  "{{ cfme_new_root_pw }}"
       (?i)root@localhost: exit
@@ -12,7 +12,7 @@
     hostname:  "{{ hostvars[item].miq_appliance_hostname }}"
   expect:
     #command: ssh  root@{{ item }}
-    command: ssh   -o StrictHostKeyChecking=no -i  ibmkey root@{{ item }}
+    command: ssh   -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i  ibmkey root@{{ item }}
     timeout: 1000000
     responses:
       #(?i)password:  "{{ cfme_new_root_pw }}"
