@@ -1,4 +1,4 @@
-- name: SCP and read the file content-123
+- name: SCP and read the file content on {{ item }}
   expect:
     #command: scp config_masterdb.sh root@{{ item }}:/tmp
     command: scp  -o StrictHostKeyChecking=no -i ibmkey {{ script_file_name }} root@{{ item }}:/tmp
@@ -7,13 +7,12 @@
       (?i)root@localhost: exit
   register: output
    
-- name: SSH and execute script
+- name: SSH and execute script on {{ item }}
   vars: 
     hostname:  "{{ hostvars[item].miq_appliance_hostname }}"
   expect:
     #command: ssh  root@{{ item }}
     command: ssh   -o StrictHostKeyChecking=no -i  ibmkey root@{{ item }}
-    timeout: 20
     responses:
       #(?i)password:  "{{ cfme_new_root_pw }}"
       #(?i)root@localhost: sh  /tmp/config_masterdb.sh "{{ hostname }}" && exit
