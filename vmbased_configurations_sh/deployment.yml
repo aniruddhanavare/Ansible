@@ -7,42 +7,42 @@
         file: configurations/group_vars/all/vars.yml
     - name: Add host to inventory
       add_host:
-        hostname: 10.241.65.130
+        hostname: 10.241.65.132
         groups: master_primary_db
-        private_ip: 10.241.65.130
+        private_ip: 10.241.65.132
         miq_appliance_hostname: auto-master-vmdb-01
         miq_cluster_node_number: 2
-        primary_host_ip: 10.241.65.128
+        primary_host_ip: 10.241.65.132
         cfme_master_region: 88
         replication_type: primary
         miq_db_disk: /dev/vdb
 
     - name: Add host to inventory UI
       add_host:
-        hostname: 10.241.65.131
+        hostname: 10.241.65.133
         groups: master_primary_appliance
-        private_ip: 10.241.65.131
+        private_ip: 10.241.65.133
         miq_appliance_hostname: auto-master-ui-01
-        vmdb_private_ip: 10.241.65.130
+        vmdb_private_ip: 10.241.65.132
 
     - name: Add host to inventory UI
       add_host:
-        hostname: 10.241.129.13
+        hostname: 10.241.129.15
         groups: vmdb_appliance
-        private_ip: 10.241.129.13
+        private_ip: 10.241.129.15
         miq_appliance_hostname: auto-master-vmdb-02
         miq_cluster_node_number: 3
-        primary_host_ip: 10.241.65.130
+        primary_host_ip: 10.241.65.132
         cfme_master_region: 88
         replication_type: standby
         miq_db_disk: /dev/vdb
 
     - name: Add host to inventory UI
       add_host:
-        hostname: 10.241.129.14
+        hostname: 10.241.129.16
         groups: ui_appliance
-        private_ip: 10.241.129.14
+        private_ip: 10.241.129.16
         miq_appliance_hostname: auto-master-ui-02
-        vmdb_private_ip: 10.241.65.130
+        vmdb_private_ip: 10.241.65.132
 
 - import_playbook: configurations/miq-config-test.yml 

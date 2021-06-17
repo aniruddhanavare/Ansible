@@ -66,7 +66,7 @@ function pinghost {
     let tryfortime-=1
     # Sleep for one second
     echo "Sleep for one second "  >> /tmp/miq_conf_output.log 
-    sleep 20s
+    sleep 1m
   done
   # Network down, number of attempts exhausted, quiting
   echo "Network down, number of attempts exhausted, quiting "  >> /tmp/miq_conf_output.log 
