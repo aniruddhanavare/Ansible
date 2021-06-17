@@ -18,9 +18,6 @@
         miq_db_disk: /dev/vdb
         node: master
         groups: master_primary_db
-
-    - include_tasks: reset-default-password.yml
-      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
     
 - hosts: all
   vars:
