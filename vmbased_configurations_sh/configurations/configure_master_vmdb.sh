@@ -39,6 +39,7 @@ cd /var/www/miq/vmdb
 DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rake evm:db:region -- --region=$miq_region  >> /tmp/miq_conf_output.log
 
 echo "Reset configured database : COMPLETE" >> /tmp/miq_conf_output.log
+
 #Disable database server
 echo "Task : Disable database server : START" >> /tmp/miq_conf_output.log
 systemctl disable evmserverd
@@ -55,13 +56,12 @@ grep -qF -- "$ssl_string" "$PG_HBA_CONF_FILE" || echo "$ssl_string" >> "$PG_HBA_
 grep -qF -- "$nossl_string" "$PG_HBA_CONF_FILE" || echo "$nossl_string" >> "$PG_HBA_CONF_FILE"
 
 
-configure_master_vmdb.sh
 ##POST STEPS
 
 echo "Task: Configure database replication start : START" >>/tmp/miq_conf_output.log 
 #Configure database replication
 appliance_console_cli  --replication=$miq_replication_type --primary-host=$miq_private_ip --cluster-node-number=$miq_cluster_node_number  --username=$db_user --password=$db_pass --auto-failover >> /tmp/miq_conf_output.log
-echo "Configure database replication finished" >>/tmp/miq_conf_output.log 
+echo "Configure database replication finished" >> /tmp/miq_conf_output.log 
 
 #Database replication status
 su - postgres -c "repmgr cluster show"   >> /tmp/miq_conf_output.log

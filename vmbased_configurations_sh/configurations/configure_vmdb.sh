@@ -66,7 +66,7 @@ function configure_miq_vmdb() {
 
     #Restart database service   
     echo "Task :  Restart database service : START" >> /tmp/miq_conf_output.log
-    systemctl disable $APPLIANCE_PG_SERVICE
+    systemctl disable evmserverd
     systemctl enable $APPLIANCE_PG_SERVICE
     echo "Task :  Restart database service : Complete" >> /tmp/miq_conf_output.log
 
@@ -124,6 +124,7 @@ if [ $(pinghost 20 $miq_primary_host_ip) -eq 0 ];
 then
   echo 'VMDB appliance is available ... Continie with UI configure steps';   >> /tmp/miq_conf_output.log 
   configure_miq_vmdb
+  exit;
 #Give user friendly message and exit the script    
 else 
   echo 'Unable to connect to host .';   >> /tmp/miq_conf_output.log
