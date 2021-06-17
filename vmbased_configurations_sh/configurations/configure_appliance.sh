@@ -36,7 +36,7 @@ function configure_miq_ui() {
   echo "Fetch remote key completed" >> /tmp/miq_conf_output.log
 
   #Connect to external region in database
-  appliance_console_cli --hostname=$vmdb_private_ip --username=$db_user --password=$db_pass --auto-failover >> /tmp/miq_conf_output.log
+  appliance_console_cli --hostname=$vmdb_private_ip --username=$db_user --password=$db_pass  >> /tmp/miq_conf_output.log
   echo "Connect to external region in database completed" >> /tmp/miq_conf_output.log
 
   # Reboot 
@@ -51,7 +51,10 @@ function pinghost {
   tryfortime=$1
   while [ $tryfortime -ne 0 ]; do
     # Ping supplied host
-    ping -q -c 1 -W 1 "$2" > /dev/null 2>&1
+    date  >> /tmp/miq_conf_output.log 
+    echo "Ping vmdb VM"  $2 >> /tmp/miq_conf_output.log 
+    ping -q -c 1 -W 1 "$2" >> /tmp/miq_conf_output.log 
+
     # Check return code
     if [ $? -eq 0 ]; then
       # Success, we can exit with the right return code
@@ -63,7 +66,7 @@ function pinghost {
     let tryfortime-=1
     # Sleep for one second
     echo "Sleep for one second "  >> /tmp/miq_conf_output.log 
-    sleep 30s
+    sleep 20s
   done
   # Network down, number of attempts exhausted, quiting
   echo "Network down, number of attempts exhausted, quiting "  >> /tmp/miq_conf_output.log 
