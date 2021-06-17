@@ -55,12 +55,12 @@ grep -qF -- "$ssl_string" "$PG_HBA_CONF_FILE" || echo "$ssl_string" >> "$PG_HBA_
 grep -qF -- "$nossl_string" "$PG_HBA_CONF_FILE" || echo "$nossl_string" >> "$PG_HBA_CONF_FILE"
 
 
-
+configure_master_vmdb.sh
 ##POST STEPS
 
 echo "Task: Configure database replication start : START" >>/tmp/miq_conf_output.log 
 #Configure database replication
-appliance_console_cli  --replication=$miq_replication_type --primary-host=$miq_private_ip --cluster-node-number=$miq_cluster_node_number  --username=$db_user --password=$db_pass --auto-failover >> /tmp/miq_conf_output.log
+appliance_console_cli  --replication=$miq_replication_type --primary-host=$miq_private_ip --cluster-node-number=$miq_cluster_node_number  --username=$db_user --password=$db_pass  >> /tmp/miq_conf_output.log
 echo "Configure database replication finished" >>/tmp/miq_conf_output.log 
 
 #Database replication status

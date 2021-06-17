@@ -78,9 +78,9 @@ function configure_miq_vmdb() {
     #Configure database replication
     if $miq_replication_type == 'standby'
     then
-        appliance_console_cli  --replication=$miq_replication_type --primary-host=$miq_primary_host_ip --cluster-node-number=$miq_cluster_node_number --dbdisk=$miq_db_disk  --username=$db_user --password=$db_pass --standby-host=$miq_private_ip  --auto-failover >> /tmp/miq_conf_output.log
+        appliance_console_cli  --replication=$miq_replication_type --primary-host=$miq_primary_host_ip --cluster-node-number=$miq_cluster_node_number --dbdisk=$miq_db_disk  --username=$db_user --password=$db_pass --standby-host=$miq_private_ip   >> /tmp/miq_conf_output.log
     else
-        appliance_console_cli  --replication=$miq_replication_type --primary-host=$miq_primary_host_ip --cluster-node-number=$miq_cluster_node_number --dbdisk=$miq_db_disk  --username=$db_user --password=$db_pass --auto-failover >> /tmp/miq_conf_output.log
+        appliance_console_cli  --replication=$miq_replication_type --primary-host=$miq_primary_host_ip --cluster-node-number=$miq_cluster_node_number --dbdisk=$miq_db_disk  --username=$db_user --password=$db_pass r >> /tmp/miq_conf_output.log
     fi
     #echo "Configure database replication finished" >>/tmp/miq_conf_output.log 
 
