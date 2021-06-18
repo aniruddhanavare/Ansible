@@ -17,7 +17,7 @@
     responses:
       #(?i)password:  "{{ cfme_new_root_pw }}"
       #(?i)root@localhost: sh  /tmp/config_masterdb.sh "{{ hostname }}" && exit
-      (?i)root@localhost: sh /tmp/"{{ script_file_name }}" {{ args }} >> /tmp/miq_conf_output.log && reboot  && exit
+      (?i)root@localhost: sh /tmp/"{{ script_file_name }}" {{ args }} >> /tmp/miq_conf_output.log 2>&1 && reboot  && exit
   register: output1
   ignore_errors: yes
   changed_when:

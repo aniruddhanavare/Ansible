@@ -97,24 +97,24 @@ function configure_miq_vmdb() {
 }
 
 function pinghost {
-  echo "Check if the $2 is available "
+  echo "Check if the $2 is available " >> /tmp/miq_conf_output.log
   # Initialize number of attempts
   tryfortime=$1
   while [ $tryfortime -ne 0 ]; do
     # Ping supplied host
-    ping -q -c 1 -W 1 "$2"
+    ping -q -c 1 -W 1 "$2" > /dev/null 2>&1
     # Check return code
     if [ $? -eq 0 ]; then
-      echo "Success, we can exit with the right return code "
+      echo "Success, we can exit with the right return code " >> /tmp/miq_conf_output.log
       echo 0
       return
     fi
     # Network down, decrement counter and try again
     let tryfortime-=1
-    echo "Sleep for 30 seconds "
+    echo "Sleep for 30 seconds " >> /tmp/miq_conf_output.log
     sleep 30s
   done
-  echo "Network down, number of attempts exhausted, quiting "
+  echo "Network down, number of attempts exhausted, quiting " >> /tmp/miq_conf_output.log
   echo 1
 }
 
