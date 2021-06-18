@@ -65,8 +65,9 @@ function configure_miq_vmdb() {
 
     # Configure database replication
     echo `date` "Task: Configure database replication start : START"
-    if $miq_replication_type == 'standby'
+    if [ "$miq_replication_type" == "standby" ];
     then
+        echo `date` "Task: standby database replication"
         appliance_console_cli \
           --replication=$miq_replication_type \
           --primary-host=$miq_primary_host_ip \
@@ -77,6 +78,7 @@ function configure_miq_vmdb() {
           --standby-host=$miq_private_ip \
           --auto-failover
     else
+        echo `date` "Task: primary database replication"
         appliance_console_cli \
           --replication=$miq_replication_type \
           --primary-host=$miq_primary_host_ip \
