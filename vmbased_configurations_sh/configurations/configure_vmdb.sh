@@ -97,7 +97,7 @@ function configure_miq_vmdb() {
 }
 
 function pinghost {
-  echo "Check if the $2 is available " >> /tmp/miq_conf_output.log
+  echo "Check if the $2 is available "
   # Initialize number of attempts
   tryfortime=$1
   while [ $tryfortime -ne 0 ]; do
@@ -105,21 +105,22 @@ function pinghost {
     ping -q -c 1 -W 1 "$2" > /dev/null 2>&1
     # Check return code
     if [ $? -eq 0 ]; then
-      echo "Success, we can exit with the right return code " >> /tmp/miq_conf_output.log
-      echo 0
-      return
+      echo "Success, we can exit with the right return code "
+      return 0
     fi
     # Network down, decrement counter and try again
     let tryfortime-=1
-    echo "Sleep for 30 seconds " >> /tmp/miq_conf_output.log
+    echo "Sleep for 30 seconds "
     sleep 30s
   done
-  echo "Network down, number of attempts exhausted, quiting " >> /tmp/miq_conf_output.log
-  echo 1
+  echo "Network down, number of attempts exhausted, quiting "
+  return 1
 }
 
 #Run the remaining commands if the host is available 
-if [ $(pinghost 20 $miq_primary_host_ip) -eq 0 ]; 
+pinghost 20 $miq_primary_host_ip
+pinghost_return_code=$?
+if [ "$pinghost_return_code" -eq "0" ];
 then
   echo "VMDB appliance $miq_primary_host_ip is available ... Continue with configuration steps";
   configure_miq_vmdb
