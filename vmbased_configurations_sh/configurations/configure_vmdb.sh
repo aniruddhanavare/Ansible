@@ -77,6 +77,16 @@ function configure_miq_vmdb() {
     if [ "$miq_replication_type" == "standby" ];
     then
         echo `date` "Task: standby database replication";
+        echo "appliance_console_cli \
+          --replication=$miq_replication_type \
+          --primary-host=$miq_primary_host_ip \
+          --cluster-node-number=$miq_cluster_node_number \
+          --dbdisk=$miq_db_disk \
+          --username=$db_user \
+          --password=$db_pass \
+          --standby-host=$miq_private_ip \
+          --auto-failover"
+
         appliance_console_cli \
           --replication=$miq_replication_type \
           --primary-host=$miq_primary_host_ip \
@@ -88,6 +98,15 @@ function configure_miq_vmdb() {
           --auto-failover
     else
         echo `date` "Task: primary database replication";
+        echo "appliance_console_cli \
+          --replication=$miq_replication_type \
+          --primary-host=$miq_primary_host_ip \
+          --cluster-node-number=$miq_cluster_node_number \
+          --dbdisk=$miq_db_disk \
+          --username=$db_user \
+          --password=$db_pass \
+          --auto-failover"
+
         appliance_console_cli \
           --replication=$miq_replication_type \
           --primary-host=$miq_primary_host_ip \
@@ -95,7 +114,7 @@ function configure_miq_vmdb() {
           --dbdisk=$miq_db_disk \
           --username=$db_user \
           --password=$db_pass \
-          --auto-failover
+          --auto-failover 
     fi
     echo `date` "Task: Configure database replication start : COMPLETE"
 
