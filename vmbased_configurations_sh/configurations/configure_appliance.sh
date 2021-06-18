@@ -43,6 +43,12 @@ function configure_miq_ui() {
     --username=$db_user \
     --password=$db_pass
   echo `date` "Task : Connect to external region in database : COMPLETE"
+
+ # Start evm failover monitor
+  echo `date` "Task : Start evm failover monitor : START"
+  systemctl start evm-failover-monitor.service
+  echo `date` "Task : Start evm failover monitor : COMPLETE"
+
 }
 
 
