@@ -13,8 +13,17 @@ miq_db_disk=${11}
 
 echo `date` "== CONFIGURE VMDB [$miq_hostname] : START =="
 
-echo `date` "Hostname: $miq_hostname"
-echo `date` "Region: $miq_region"
+echo "miq_hostname" $miq_hostname
+echo `date` "Region:" $miq_region
+echo `date` "miq_replication_type:" $miq_replication_type
+echo `date` "miq_private_ip:" $miq_private_ip
+echo `date` "miq_cluster_node_number:" $miq_cluster_node_number
+echo `date` "db_user:" $db_user
+echo `date` "db_pass:" $db_pass
+echo `date` "miq_primary_host_ip:" $miq_primary_host_ip
+echo `date` "miq_ssh_user:" $miq_ssh_user
+echo `date` "miq_ssh_passwd:" $miq_ssh_passwd
+echo `date` "miq_db_disk:" $miq_db_disk
 
 function configure_miq_vmdb() {
     # Set hostname
