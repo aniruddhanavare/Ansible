@@ -154,8 +154,6 @@ if [ "$pinghost_return_code" -eq "0" ];
 then
   echo "VMDB appliance $miq_primary_host_ip is available ... Continue with configuration steps";
   configure_miq_vmdb
-  sleep 50s
-  reboot
   echo `date` "== CONFIGURE VMDB [$miq_hostname] : COMPLETE =="
   exit;
 else 
