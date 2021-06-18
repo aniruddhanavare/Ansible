@@ -7,66 +7,67 @@ miq_private_ip=$5
 miq_cluster_node_number=$6
 db_user=$7
 db_pass=$8
-echo "CONFIGURE MASTER VMDB ==>"
 
-echo $miq_hostname >> /tmp/miq_conf_output.log
-echo $miq_region >> /tmp/miq_conf_output.log
-echo $miq_vpc_ip_range >> /tmp/miq_conf_output.log
+echo `date` "== CONFIGURE MASTER VMDB [$miq_hostname] : START =="
 
-#set hostname
-hostnamectl set-hostname  $miq_hostname  >> /tmp/miq_conf_output.log
+echo `date` "Hostname: $miq_hostname"
+echo `date` "Region: $miq_region"
+echo `date` "IP Range: $miq_vpc_ip_range"
+
+# Set hostname
+echo `date` "Task : Set hostname : START"
+hostnamectl set-hostname  $miq_hostname
+echo `date` "Task : Set hostname : COMPLETE"
 
 # Synchronize time
-echo "Task : [$miq_hostname] Synchronize time : START" >> /tmp/miq_conf_output.log
+echo `date` "Task : Synchronize time : START"
+systemctl enable chronyd.service
+systemctl start chronyd.service
+echo `date` "Task : Synchronize time : COMPLETE"
 
-systemctl enable chronyd.service >> /tmp/miq_conf_output.log
-systemctl start chronyd.service >> /tmp/miq_conf_output.log
+# Restore default database configuration file
+echo `date` "Task : Restore default database configuration file : START"
+systemctl stop evmserverd
+\cp /var/www/miq/vmdb/config/database.pg.yml /var/www/miq/vmdb/config/database.yml
+systemctl restart $APPLIANCE_PG_SERVICE
+su - postgres -c "dropdb  -U root  vmdb_production --if-exists"
+echo `date` "Task : Restore default database configuration file : COMPLETE"
 
-echo "Task : Synchronize time : COMPLETE" >> /tmp/miq_conf_output.log
-
-#Restore default database configuration file
-echo "Task : [$miq_hostname]  Restore default database configuration file : START" >> /tmp/miq_conf_output.log
-systemctl stop evmserverd >> /tmp/miq_conf_output.log
-\cp /var/www/miq/vmdb/config/database.pg.yml /var/www/miq/vmdb/config/database.yml >> /tmp/miq_conf_output.log
-systemctl restart $APPLIANCE_PG_SERVICE >> /tmp/miq_conf_output.log
-su - postgres -c "dropdb  -U root  vmdb_production --if-exists" >> /tmp/miq_conf_output.log
-
-echo "Task : Restore default database configuration file : COMPLETE" >> /tmp/miq_conf_output.log
-
-#Reset configured database
-echo "Task :  [$miq_hostname]  Reset configured database : START" >> /tmp/miq_conf_output.log
+# Reset configured database
+echo `date` "Task : Reset configured database : START"
 cd /var/www/miq/vmdb 
-DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rake evm:db:region -- --region=$miq_region  >> /tmp/miq_conf_output.log
+DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rake evm:db:region -- --region=$miq_region
+echo `date` "Task : Reset configured database : COMPLETE"
 
-echo "Reset configured database : COMPLETE" >> /tmp/miq_conf_output.log
-
-#Disable database server
-echo "Task : Disable database server : START" >> /tmp/miq_conf_output.log
+# Disable database server
+echo `date` "Task : Disable database server : START"
 systemctl disable evmserverd
-echo "Disable database server : COMPLETE" >> /tmp/miq_conf_output.log
+echo `date` "Task : Disable database server : COMPLETE"
 
 
-#update pg_hba_config
-echo "Task: update pg_hba_config start : START" >>/tmp/miq_conf_output.log 
-
+# Update pg_hba_config
+echo `date` "Task: Update pg_hba_config : START"
 PG_HBA_CONF_FILE=/var/lib/pgsql/data/pg_hba.conf
 ssl_string="host all all $miq_vpc_ip_range  md5"
 nossl_string="hostnossl all all $miq_vpc_ip_range md5"
 grep -qF -- "$ssl_string" "$PG_HBA_CONF_FILE" || echo "$ssl_string" >> "$PG_HBA_CONF_FILE"
 grep -qF -- "$nossl_string" "$PG_HBA_CONF_FILE" || echo "$nossl_string" >> "$PG_HBA_CONF_FILE"
+echo `date` "Task: Update pg_hba_config : COMPLETE"
 
+# Configure database replication
+echo `date` "Task: Configure database replication : START"
+appliance_console_cli \
+    --replication=$miq_replication_type \
+    --primary-host=$miq_private_ip \
+    --cluster-node-number=$miq_cluster_node_number \
+    --username=$db_user \
+    --password=$db_pass \
+    --auto-failover
+echo `date` "Task: Configure database replication : COMPLETE"
 
-##POST STEPS
+# Database replication status
+echo `date` "Task: Verify Database replication status : START"
+su - postgres -c "repmgr cluster show"
+echo `date` "Task: Verify Database replication status : COMPLETE"
 
-echo "Task: Configure database replication start : START" >>/tmp/miq_conf_output.log 
-#Configure database replication
-appliance_console_cli  --replication=$miq_replication_type --primary-host=$miq_private_ip --cluster-node-number=$miq_cluster_node_number  --username=$db_user --password=$db_pass --auto-failover >> /tmp/miq_conf_output.log
-echo "Configure database replication finished" >> /tmp/miq_conf_output.log 
-
-#Database replication status
-su - postgres -c "repmgr cluster show"   >> /tmp/miq_conf_output.log
-
-
-# Reboot 
-#echo "Task : Reboot appliance : START" >> /tmp/miq_conf_output.log
-#reboot
+echo `date` "== CONFIGURE MASTER VMDB [$miq_hostname] : COMPLETE =="
