@@ -80,6 +80,7 @@ if [ "$pinghost_return_code" -eq "0" ];
 then
   echo "VMDB appliance $vmdb_private_ip is available ... Continue with configuration steps";
   configure_miq_ui
+  reboot
   echo `date` "== CONFIGURE UI APPLIANCE [$miq_hostname] : COMPLETE =="
 else 
   echo "Unable to connect to VMDB appliance $vmdb_private_ip";
