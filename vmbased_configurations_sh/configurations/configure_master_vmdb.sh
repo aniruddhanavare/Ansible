@@ -63,8 +63,6 @@ appliance_console_cli \
     --username=$db_user \
     --password=$db_pass \
     --auto-failover
-echo $?
-reboot
 echo `date` "Task: Configure database replication : COMPLETE"
 
 # Database replication status
