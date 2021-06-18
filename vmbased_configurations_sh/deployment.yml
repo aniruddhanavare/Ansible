@@ -27,11 +27,11 @@
 
     - name: Add host to inventory UI
       add_host:
-        hostname: 10.241.129.35
+        hostname: 10.241.129.36
         groups: vmdb_appliance
-        private_ip: 10.241.129.35
+        private_ip: 10.241.129.36
         miq_appliance_hostname: auto-master-vmdb-02
-        miq_cluster_node_number: 3
+        miq_cluster_node_number: 4
         primary_host_ip: 10.241.65.9
         cfme_master_region: 88
         replication_type: standby
