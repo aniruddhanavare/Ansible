@@ -77,12 +77,12 @@ function pinghost {
 #Run the remaining commands if the host is available 
 if [ $(pinghost 20 $vmdb_private_ip) -eq 0 ]; 
 then
-  echo "VMDB appliance $vmdb_private_ip is available ... Continue with configuration steps"
+  echo "VMDB appliance $vmdb_private_ip is available ... Continue with configuration steps";
   configure_miq_ui
   echo `date` "== CONFIGURE UI APPLIANCE [$miq_hostname] : COMPLETE =="
 else 
-  echo "Unable to connect to VMDB appliance $vmdb_private_ip."
-  echo `date` "== CONFIGURE UI APPLIANCE [$miq_hostname] : ABORTED =="
+  echo "Unable to connect to VMDB appliance $vmdb_private_ip";
+  echo `date` "== CONFIGURE UI APPLIANCE [$miq_hostname] : ABORTED ==";
   exit;
 fi
 

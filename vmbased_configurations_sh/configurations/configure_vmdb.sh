@@ -121,12 +121,12 @@ function pinghost {
 #Run the remaining commands if the host is available 
 if [ $(pinghost 20 $miq_primary_host_ip) -eq 0 ]; 
 then
-  echo "VMDB appliance $miq_primary_host_ip is available ... Continue with configuration steps"
+  echo "VMDB appliance $miq_primary_host_ip is available ... Continue with configuration steps";
   configure_miq_vmdb
   echo `date` "== CONFIGURE VMDB [$miq_hostname] : COMPLETE =="
   exit;
 else 
-  echo "Unable to connect to VMDB appliance $miq_primary_host_ip."
-  echo `date` "== CONFIGURE VMDB [$miq_hostname] : ABORTED =="
+  echo "Unable to connect to VMDB appliance $miq_primary_host_ip";
+  echo `date` "== CONFIGURE VMDB [$miq_hostname] : ABORTED ==";
   exit;
 fi
