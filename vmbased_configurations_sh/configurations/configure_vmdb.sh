@@ -88,7 +88,7 @@ function configure_miq_vmdb() {
           --auto-failover"
         
         appliance_console_cli \
-          --replication=$miq_replication_type 
+          --replication=$miq_replication_type \
           --primary-host=$miq_primary_host_ip \
           --cluster-node-number=$miq_cluster_node_number \
           --dbdisk=$miq_db_disk \
