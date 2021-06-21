@@ -13,18 +13,6 @@ miq_db_disk=${11}
 
 echo `date` "== CONFIGURE VMDB [$miq_hostname] : START =="
 
-echo "miq_hostname" $miq_hostname
-echo `date` "Region:" $miq_region
-echo `date` "miq_replication_type:" $miq_replication_type
-echo `date` "miq_private_ip:" $miq_private_ip
-echo `date` "miq_cluster_node_number:" $miq_cluster_node_number
-echo `date` "db_user:" $db_user
-echo `date` "db_pass:" $db_pass
-echo `date` "miq_primary_host_ip:" $miq_primary_host_ip
-echo `date` "miq_ssh_user:" $miq_ssh_user
-echo `date` "miq_ssh_passwd:" $miq_ssh_passwd
-echo `date` "miq_db_disk:" $miq_db_disk
-
 function configure_miq_vmdb() {
     # Set hostname
     echo `date` "Task : Set hostname : START"
@@ -77,16 +65,6 @@ function configure_miq_vmdb() {
     if [ "$miq_replication_type" == "standby" ];
     then
         echo `date` "Task: standby database replication";
-        echo "appliance_console_cli \
-          --replication=$miq_replication_type \
-          --primary-host=$miq_primary_host_ip \
-          --cluster-node-number=$miq_cluster_node_number \
-          --dbdisk=$miq_db_disk \
-          --username=$db_user \
-          --password=$db_pass \
-          --standby-host=$miq_private_ip \
-          --auto-failover"
-        
         appliance_console_cli \
           --replication=$miq_replication_type \
           --primary-host=$miq_primary_host_ip \
@@ -99,15 +77,6 @@ function configure_miq_vmdb() {
          echo $? 
     else
         echo `date` "Task: primary database replication";
-        echo "appliance_console_cli \
-          --replication=$miq_replication_type \
-          --primary-host=$miq_primary_host_ip \
-          --cluster-node-number=$miq_cluster_node_number \
-          --dbdisk=$miq_db_disk \
-          --username=$db_user \
-          --password=$db_pass \
-          --auto-failover"
-
         appliance_console_cli \
           --replication=$miq_replication_type \
           --primary-host=$miq_primary_host_ip \
@@ -147,7 +116,7 @@ function pinghost {
   return 1
 }
 
-#Run the remaining commands if the host is available 
+#Run the remaining commands if the host is available
 pinghost 20 $miq_primary_host_ip
 pinghost_return_code=$?
 if [ "$pinghost_return_code" -eq "0" ];
