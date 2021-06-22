@@ -1,27 +1,14 @@
 - name: SCP and copy script to {{ item }}
-  expect:
-    #command: scp config_masterdb.sh root@{{ item }}:/tmp
-    command: scp  -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i ibmkey {{ script_file_name }} root@{{ item }}:/tmp
-    responses:
-#      (?i)password:  "{{ cfme_new_root_pw }}"
-      (?i)root@localhost: exit
+  command: scp  -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i ibmkey {{ script_file_name }}  root@{{ item }}:/tmp
   register: output
-   
+
 - name: SSH and execute script on {{ item }}
-  vars: 
-    hostname:  "{{ hostvars[item].miq_appliance_hostname }}"
-  expect:
-    #command: ssh  root@{{ item }}
-    command: ssh   -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i  ibmkey root@{{ item }}
-    timeout: 1000000
-    responses:
-      #(?i)password:  "{{ cfme_new_root_pw }}"
-      #(?i)root@localhost: sh  /tmp/config_masterdb.sh "{{ hostname }}" && exit
-      (?i)root@localhost: sh /tmp/"{{ script_file_name }}" {{ args }} >> /tmp/miq_conf_output.log 2>&1 && exit
+  command: ssh   -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i  ibmkey root@{{ item }} "sh /tmp/{{ script_file_name }} {{ args }}" >> /tmp/miq_conf_output.log 2>&1
+  #timeout: 1000000
   register: output1
   ignore_errors: yes
   changed_when:
-  - '"Connection" in output.stdout'
+  - '"Connection to {{ item }} closed by remote host." in output1'
 
 - name: Printing the output 
   debug : 

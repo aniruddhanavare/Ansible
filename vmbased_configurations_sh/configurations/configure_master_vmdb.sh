@@ -54,20 +54,6 @@ grep -qF -- "$ssl_string" "$PG_HBA_CONF_FILE" || echo "$ssl_string" >> "$PG_HBA_
 grep -qF -- "$nossl_string" "$PG_HBA_CONF_FILE" || echo "$nossl_string" >> "$PG_HBA_CONF_FILE"
 echo `date` "Task: Update pg_hba_config : COMPLETE"
 
-# Configure database replication
-echo `date` "Task: Configure database replication : START"
-appliance_console_cli \
-    --replication=$miq_replication_type \
-    --primary-host=$miq_private_ip \
-    --cluster-node-number=$miq_cluster_node_number \
-    --username=$db_user \
-    --password=$db_pass \
-    --auto-failover
-echo `date` "Task: Configure database replication : COMPLETE"
+echo `date` "== MASTER VMDB [$miq_hostname] : Restarting... =="
 
-# Database replication status
-echo `date` "Task: Verify Database replication status : START"
-su - postgres -c "repmgr cluster show"
-echo `date` "Task: Verify Database replication status : COMPLETE"
-
-echo `date` "== CONFIGURE MASTER VMDB [$miq_hostname] : COMPLETE =="
+reboot

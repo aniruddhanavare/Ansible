@@ -44,49 +44,10 @@ function configure_miq_ui() {
     --password=$db_pass
   echo `date` "Task : Connect to external region in database : COMPLETE"
 
- # Start evm failover monitor
-  echo `date` "Task : Start evm failover monitor : START"
-  systemctl start evm-failover-monitor.service
-  echo `date` "Task : Start evm failover monitor : COMPLETE"
-
+  #reboot
+  echo `date` "== UI APPLIANCE [$miq_hostname] : Restarting... =="
+  reboot
 }
 
-
-function pinghost {
-  echo "Check if the $2 is available "
-  # Initialize number of attempts
-  tryfortime=$1
-  while [ $tryfortime -ne 0 ]; do
-    # Ping supplied host
-    ping -q -c 1 -W 1 "$2"
-    # Check return code
-    if [ $? -eq 0 ]; then
-      echo "Success, we can exit with the right return code "
-      return 0
-    fi
-    # Network down, decrement counter and try again
-    let tryfortime-=1
-    echo "Sleep for one minute "
-    sleep 1m
-  done
-  echo "Network down, number of attempts exhausted, quiting "
-  return 1
-}
-
-#Run the remaining commands if the host is available 
-pinghost 20 $vmdb_private_ip
-pinghost_return_code=$?
-if [ "$pinghost_return_code" -eq "0" ];
-then
-  echo "VMDB appliance $vmdb_private_ip is available ... Continue with configuration steps";
-  configure_miq_ui
-  echo `date` "== CONFIGURE UI APPLIANCE [$miq_hostname] : COMPLETE =="
-else 
-  echo "Unable to connect to VMDB appliance $vmdb_private_ip";
-  echo `date` "== CONFIGURE UI APPLIANCE [$miq_hostname] : ABORTED ==";
-  exit;
-fi
-
-
-
+configure_miq_ui
 

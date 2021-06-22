@@ -60,73 +60,9 @@ function configure_miq_vmdb() {
     systemctl enable $APPLIANCE_PG_SERVICE
     echo `date` "Task : Restart database service : COMPLETE"
 
-    # Configure database replication
-    echo `date` "Task: Configure database replication start : START"
-    if [ "$miq_replication_type" == "standby" ];
-    then
-        echo `date` "Task: standby database replication";
-        appliance_console_cli \
-          --replication=$miq_replication_type \
-          --primary-host=$miq_primary_host_ip \
-          --cluster-node-number=$miq_cluster_node_number \
-          --dbdisk=$miq_db_disk \
-          --username=$db_user \
-          --password=$db_pass \
-          --standby-host=$miq_private_ip \
-          --auto-failover
-         echo $? 
-    else
-        echo `date` "Task: primary database replication";
-        appliance_console_cli \
-          --replication=$miq_replication_type \
-          --primary-host=$miq_primary_host_ip \
-          --cluster-node-number=$miq_cluster_node_number \
-          --dbdisk=$miq_db_disk \
-          --username=$db_user \
-          --password=$db_pass \
-          --auto-failover
-        echo $?
-    fi
-    echo `date` "Task: Configure database replication start : COMPLETE"
-
-    # Database replication status
-    echo `date` "Task: Verify Database replication status : START"
-    su - postgres -c "repmgr cluster show"
-    echo `date` "Task: Verify Database replication status : COMPLETE"
+    #reboot
+    echo `date` "== VMDB [$miq_hostname] : Restarting... =="
+    reboot
 }
 
-function pinghost {
-  echo "Check if the $2 is available "
-  # Initialize number of attempts
-  tryfortime=$1
-  while [ $tryfortime -ne 0 ]; do
-    # Ping supplied host
-    ping -q -c 1 -W 1 "$2" > /dev/null 2>&1
-    # Check return code
-    if [ $? -eq 0 ]; then
-      echo "Success, we can exit with the right return code "
-      return 0
-    fi
-    # Network down, decrement counter and try again
-    let tryfortime-=1
-    echo "Sleep for 30 seconds "
-    sleep 30s
-  done
-  echo "Network down, number of attempts exhausted, quiting "
-  return 1
-}
-
-#Run the remaining commands if the host is available
-pinghost 20 $miq_primary_host_ip
-pinghost_return_code=$?
-if [ "$pinghost_return_code" -eq "0" ];
-then
-  echo "VMDB appliance $miq_primary_host_ip is available ... Continue with configuration steps";
-  configure_miq_vmdb
-  echo `date` "== CONFIGURE VMDB [$miq_hostname] : COMPLETE =="
-  exit;
-else 
-  echo "Unable to connect to VMDB appliance $miq_primary_host_ip";
-  echo `date` "== CONFIGURE VMDB [$miq_hostname] : ABORTED ==";
-  exit;
-fi
+configure_miq_vmdb
