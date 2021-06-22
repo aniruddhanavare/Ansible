@@ -7,7 +7,7 @@
         file: configurations/group_vars/all/vars.yml
     - name: Add host to inventory
       add_host:
-        hostname: 169.59.165.70
+        hostname: 10.241.65.32
         groups: master_primary_db
         private_ip: 10.241.65.32
         miq_appliance_hostname: auto-master-vmdb-01
@@ -19,7 +19,7 @@
 
     - name: Add host to inventory UI
       add_host:
-        hostname: 169.59.163.83
+        hostname: 10.241.65.33
         groups: master_primary_appliance
         private_ip: 10.241.65.33
         miq_appliance_hostname: auto-master-ui-01
@@ -27,7 +27,7 @@
 
     - name: Add host to inventory UI
       add_host:
-        hostname: 52.117.121.229
+        hostname: 10.241.129.59
         groups: vmdb_appliance
         private_ip: 10.241.129.59
         miq_appliance_hostname: auto-master-vmdb-02
@@ -39,7 +39,7 @@
 
     - name: Add host to inventory UI
       add_host:
-        hostname: 52.117.121.253
+        hostname: 10.241.129.60
         groups: ui_appliance
         private_ip: 10.241.129.60
         miq_appliance_hostname: auto-master-ui-02
