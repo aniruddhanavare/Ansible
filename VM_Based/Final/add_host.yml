@@ -4,7 +4,7 @@
   tasks:
     - name: Add the master primary vmdb appliance
       add_host:
-        hostname: "{{item.private_ip}}"
+        hostname: "{{item.floating_ip}}"
         private_ip: "{{item.private_ip}}"
         miq_appliance_hostname: "{{item.miq_appliance_hostname}}"
         miq_cluster_node_number: "{{item.miq_cluster_node_number}}"
@@ -18,7 +18,7 @@
 
     - name: Add the master primary ui appliance
       add_host:
-        hostname: "{{item.private_ip}}"
+        hostname: "{{item.floating_ip}}"
         private_ip: "{{item.private_ip}}"
         miq_appliance_hostname: "{{item.miq_appliance_hostname}}"
         vmdb_private_ip: "{{ item.vmdb_private_ip }}"
@@ -27,7 +27,7 @@
 
     - name: Add the db appliances
       add_host:
-        hostname: "{{item.private_ip}}"
+        hostname: "{{item.floating_ip}}"
         private_ip: "{{item.private_ip}}"
         miq_appliance_hostname: "{{item.miq_appliance_hostname}}"
         miq_cluster_node_number: "{{item.miq_cluster_node_number}}"
@@ -41,7 +41,7 @@
 
     - name: Add the non db appliance
       add_host:
-        hostname: "{{item.private_ip}}"
+        hostname: "{{item.floating_ip}}"
         private_ip: "{{item.private_ip}}"
         miq_appliance_hostname: "{{item.miq_appliance_hostname}}"
         vmdb_private_ip: "{{ item.vmdb_private_ip }}"
