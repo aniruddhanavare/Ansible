@@ -77,8 +77,7 @@
       vars:
         script_file_name: configure_appliance_failover.sh
         args: "{{ hostvars[item].miq_appliance_hostname }}"
-      loop: "{{ query('inventory_hostnames', 'appliance') }}" 
+      loop: "{{ query('inventory_hostnames', 'appliance') }}"
 
-    - name: Verify logs
-      include_tasks: configuration_status_check.yml
-      loop: "{{ query('inventory_hostnames', 'all') }}"
+    - debug :
+        msg: Configuration completed.starting status check
