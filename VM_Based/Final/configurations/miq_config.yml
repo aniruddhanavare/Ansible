@@ -2,9 +2,21 @@
   vars_files:
       - vars/config_vars.yml
   tasks:
-    - name: Reset Default Password
+    - name: Reset Default Password for Master Primary VMDB
       include_tasks: reset-default-password.yml
-      loop: "{{ query('inventory_hostnames', 'all') }}"
+      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}"
+
+    - name: Reset Default Password for Master Primary Appliance
+      include_tasks: reset-default-password.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}"
+
+    - name: Reset Default Password for VMDBs
+      include_tasks: reset-default-password.yml
+      loop: "{{ query('inventory_hostnames', 'vmdb_appliance') }}"
+
+    - name: Reset Default Password for Appliances
+      include_tasks: reset-default-password.yml
+      loop: "{{ query('inventory_hostnames', 'appliance') }}"
 
     - name: Configure Master Primary VMDB
       include_tasks: configure_miq_appliance.yml
@@ -42,7 +54,6 @@
         args: "{{ hostvars[item].miq_appliance_hostname }}"
       loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}" 
 
-
     - name: Configure VMDBs
       include_tasks: configure_miq_appliance.yml
       vars:
@@ -79,5 +90,21 @@
         args: "{{ hostvars[item].miq_appliance_hostname }}"
       loop: "{{ query('inventory_hostnames', 'appliance') }}"
 
-    - debug :
-        msg: Configuration completed.starting status check
+    - debug:
+        msg: Configuration Completed.Check logs
+
+    - name: Verify logs on Master Primary VMDB
+      include_tasks: configuration_status_check.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}"
+
+    - name: Verify logs on Master Primary Appliance
+      include_tasks: configuration_status_check.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}"
+
+    - name: Verify logs on VMDBs
+      include_tasks: configuration_status_check.yml
+      loop: "{{ query('inventory_hostnames', 'vmdb_appliance') }}"
+
+    - name: Verify logs on Appliances
+      include_tasks: configuration_status_check.yml
+      loop: "{{ query('inventory_hostnames', 'appliance') }}"

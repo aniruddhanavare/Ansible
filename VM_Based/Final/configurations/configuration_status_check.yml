@@ -1,10 +1,7 @@
-- name: Appliance status check (log file) on {{ item }}
+- name: Appliance log file on {{ item }}
   command: ssh   -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i  /tmp/ssh_host_rsa_key root@{{ item }}  "cat /tmp/miq_conf_output.log"
-  register: output
-  ignore_errors: yes
-  changed_when:
-  - '"Connection to {{ item }} closed by remote host." in output'
+  register: log_output
 
 - name: Printing the output 
   debug : 
-    msg: '{{ output.stdout_lines }}'
+    msg: '{{ log_output.stdout_lines }}'
