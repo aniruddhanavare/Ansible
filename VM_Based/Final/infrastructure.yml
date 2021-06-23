@@ -1,23 +1,21 @@
 ---
-- name: VM Based deployment
+- name: VM Based Infrastructure
   hosts: localhost
   tasks:
     - debug:
-        msg: "Starting Playbook execution"
-
-- import_playbook: initialize_host.yml
+        msg: "Starting Infrastructure creation..."
 
 - import_playbook: ibmcloud/main.yml
   when: provider == "ibmcloud"
 
 - import_playbook: add_host.yml
 
-- name: Get host file contents
+- name: VM Based Infrastructure
   hosts: localhost
   tasks:
-    - debug: msg="the value of inventory is {{lookup('file', 'hosts/miq-inventory') }}"
+    - debug:
+        msg: "Infrastructure creation completed!!"
 
-    - debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
 
 
 

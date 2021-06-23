@@ -1,0 +1,84 @@
+- hosts: localhost
+  vars_files:
+      - vars/config_vars.yml
+  tasks:
+    - name: Reset Default Password
+      include_tasks: reset-default-password.yml
+      loop: "{{ query('inventory_hostnames', 'all') }}"
+
+    - name: Configure Master Primary VMDB
+      include_tasks: configure_miq_appliance.yml
+      vars:
+        script_file_name: configure_master_vmdb.sh
+        args: "{{ hostvars[item].miq_appliance_hostname }}  {{ hostvars[item].miq_region }} {{ cfme_vpc_ip_range }} {{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }}"
+      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}"
+
+    - name: Check Master Primary VMDB server status
+      include_tasks: check_server_state.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
+
+    - name: Configure Master Primary Appliance
+      include_tasks: configure_miq_appliance.yml
+      vars:
+        script_file_name: configure_appliance.sh
+        args: "{{ hostvars[item].miq_appliance_hostname }}  {{ hostvars[item].vmdb_private_ip }}  {{ cfme_ssh_user }}  {{ cfme_new_root_pw }} {{ cfme_db_user }} {{ cfme_db_pass }} {{encryption_ipaddress}}"
+      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}"
+
+    - name: Check Master Primary Appliance server status
+      include_tasks: check_server_state.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}" 
+
+    - name: Configure Master Primary VMDB Replication
+      include_tasks: configure_miq_appliance.yml
+      vars:
+        script_file_name: configure_replication.sh
+        args: "{{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }}"
+      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
+
+    - name: Configure Application Database Failover Monitor
+      include_tasks: configure_miq_appliance.yml
+      vars:
+        script_file_name: configure_appliance_failover.sh
+        args: "{{ hostvars[item].miq_appliance_hostname }}"
+      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}" 
+
+
+    - name: Configure VMDBs
+      include_tasks: configure_miq_appliance.yml
+      vars:
+        args: "{{ hostvars[item].miq_appliance_hostname }}  {{ hostvars[item].miq_region }}  {{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }}  {{encryption_ipaddress}}  {{ cfme_ssh_user }} {{cfme_new_root_pw}} {{ hostvars[item].miq_db_disk }}"
+        script_file_name: configure_vmdb.sh
+      loop: "{{ query('inventory_hostnames', 'vmdb_appliance') }}" 
+
+    - name: Check VMDBs server status
+      include_tasks: check_server_state.yml
+      loop: "{{ query('inventory_hostnames', 'vmdb_appliance') }}" 
+
+    - name: Configure Appliances
+      include_tasks: configure_miq_appliance.yml
+      vars:
+        args: "{{ hostvars[item].miq_appliance_hostname }}  {{ hostvars[item].vmdb_private_ip }}  {{ cfme_ssh_user }}  {{ cfme_new_root_pw }} {{ cfme_db_user }} {{ cfme_db_pass }} {{encryption_ipaddress}}"
+        script_file_name: configure_appliance.sh
+      loop: "{{ query('inventory_hostnames', 'appliance') }}"
+
+    - name: Check Appliances server status
+      include_tasks: check_server_state.yml
+      loop: "{{ query('inventory_hostnames', 'appliance') }}"
+
+    - name: Configure Replication on DB appliances
+      include_tasks: configure_miq_appliance.yml
+      vars:
+        script_file_name: configure_replication.sh
+        args: "{{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }} {{ hostvars[item].miq_db_disk }} {{ hostvars[item].primary_host_ip }}"
+      loop: "{{ query('inventory_hostnames', 'vmdb_appliance') }}"
+
+    - name: Configure Application Database Failover Monitor on Non DB Appliances
+      include_tasks: configure_miq_appliance.yml
+      vars:
+        script_file_name: configure_appliance_failover.sh
+        args: "{{ hostvars[item].miq_appliance_hostname }}"
+      loop: "{{ query('inventory_hostnames', 'appliance') }}" 
+
+    - name: Verify logs
+      include_tasks: configuration_status_check.yml
+      loop: "{{ query('inventory_hostnames', 'all') }}"

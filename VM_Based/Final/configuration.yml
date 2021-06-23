@@ -1,0 +1,14 @@
+---
+- name: VM Based Configuration
+  hosts: localhost
+  tasks:
+    - debug:
+        msg: "Starting Configuration execution..."
+
+- import_playbook: configurations/miq_config.yml 
+
+- name: VM Based Configuration
+  hosts: localhost
+  tasks:
+    - debug:
+        msg: "Configuration execution completed"

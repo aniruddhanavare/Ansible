@@ -1,6 +1,9 @@
 ---
 - name: Create IBM Cloud Infrastructure
   hosts: localhost
+  vars_files:
+    - vars/master.yml
+    - vars/worker.yml
   collections:
    - ibm.cloudcollection
   tasks:
@@ -33,6 +36,7 @@
 
     - name : Add users IP address to security group
       include_tasks: add_ip_to_security_group.yml
+      when: (security_group_rule_ip_address is defined) and (security_group_rule_ip_address|length > 0)
 
     - name : Add Master Subnet Group
       include_tasks: create_subnet_set.yml

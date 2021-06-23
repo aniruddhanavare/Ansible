@@ -1,0 +1,10 @@
+---
+acl_tcp_source:
+acl_tcp_destination:
+tcp_min_port:
+tcp_max_port:
+acl_all_source:
+acl_all_destination:
+total_ipv4_address_count:
+network_interface_name:
+security_group_rule_ip_address:

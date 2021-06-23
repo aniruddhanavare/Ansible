@@ -3,57 +3,49 @@
   hosts: localhost
   tasks:
     - name: Add the master primary vmdb appliance
-      ini_file:
-        path: hosts/miq-inventory
-        section: "master_primary_db"
-        option: "{{ item.floating_ip }} private_ip={{item.private_ip}} miq_appliance_hostname={{item.miq_appliance_hostname}} miq_cluster_node_number={{item.miq_cluster_node_number}} primary_host_ip={{item.primary_host_ip}} miq_region={{item.miq_region}} replication_type={{item.replication_type}} miq_db_disk"
-        value: "{{ item.miq_db_disk }}"
-        no_extra_spaces: yes
-        mode: 0666
-        state: present
-        backup: no
+      add_host:
+        hostname: "{{item.private_ip}}"
+        private_ip: "{{item.private_ip}}"
+        miq_appliance_hostname: "{{item.miq_appliance_hostname}}"
+        miq_cluster_node_number: "{{item.miq_cluster_node_number}}"
+        primary_host_ip: "{{item.primary_host_ip}}"
+        miq_region: "{{item.miq_region}}"
+        replication_type: "{{item.replication_type}}"
+        miq_db_disk: "{{ item.miq_db_disk }}"
+        node: "{{ item.node }}"
+        groups: [master_primary_db]
       loop: "{{master_primary_db}}"
 
     - name: Add the master primary ui appliance
-      ini_file:
-        path: hosts/miq-inventory
-        section: "master_primary_appliance"
-        option: "{{ item.floating_ip }} private_ip={{item.private_ip}} miq_appliance_hostname={{item.miq_appliance_hostname}} vmdb_private_ip"
-        value: "{{ item.vmdb_private_ip }}"
-        no_extra_spaces: yes
-        mode: 0666
-        state: present
-        backup: no
+      add_host:
+        hostname: "{{item.private_ip}}"
+        private_ip: "{{item.private_ip}}"
+        miq_appliance_hostname: "{{item.miq_appliance_hostname}}"
+        vmdb_private_ip: "{{ item.vmdb_private_ip }}"
+        groups: [master_primary_appliance]
       loop: "{{master_primary_appliance}}"
 
     - name: Add the db appliances
-      ini_file:
-        path: hosts/miq-inventory
-        section: "vmdb_appliance"
-        option: "{{ item.floating_ip }} private_ip={{item.private_ip}} miq_appliance_hostname={{item.miq_appliance_hostname}} miq_cluster_node_number={{item.miq_cluster_node_number}} primary_host_ip={{item.primary_host_ip}} miq_region={{item.miq_region}} replication_type={{item.replication_type}} miq_db_disk"
-        value: "{{ item.miq_db_disk }}"
-        no_extra_spaces: yes
-        mode: 0666
-        state: present
-        backup: no
+      add_host:
+        hostname: "{{item.private_ip}}"
+        private_ip: "{{item.private_ip}}"
+        miq_appliance_hostname: "{{item.miq_appliance_hostname}}"
+        miq_cluster_node_number: "{{item.miq_cluster_node_number}}"
+        primary_host_ip: "{{item.primary_host_ip}}"
+        miq_region: "{{item.miq_region}}"
+        replication_type: "{{item.replication_type}}"
+        miq_db_disk: "{{ item.miq_db_disk }}"
+        node: "{{ item.node }}"
+        groups: [vmdb_appliance]
       loop: "{{vmdb_appliance}}"
 
     - name: Add the non db appliance
-      ini_file:
-        path: hosts/miq-inventory
-        section: "appliance"
-        option: "{{ item.floating_ip }} private_ip={{item.private_ip}} miq_appliance_hostname={{item.miq_appliance_hostname}} vmdb_private_ip"
-        value: "{{ item.vmdb_private_ip }}"
-        no_extra_spaces: yes
-        mode: 0666
-        state: present
-        backup: no
+      add_host:
+        hostname: "{{item.private_ip}}"
+        private_ip: "{{item.private_ip}}"
+        miq_appliance_hostname: "{{item.miq_appliance_hostname}}"
+        vmdb_private_ip: "{{ item.vmdb_private_ip }}"
+        groups: [appliance]
       loop: "{{appliance}}"
-
-    - meta: refresh_inventory
-
-    - name: Pause for 1 minute to refresh inventory
-      pause:
-        minutes: 1
 
 

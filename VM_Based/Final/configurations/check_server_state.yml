@@ -1,0 +1,7 @@
+- name: Waiting for server {{ item }} to start
+  wait_for:
+    host: "{{ item }}"
+    port: 22
+    delay: 10
+    state: started
+    msg: "ManageIQ Port is not Listening"

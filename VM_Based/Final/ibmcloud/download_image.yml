@@ -24,7 +24,7 @@
   get_url:
     url: "{{image_url}}{{source_image_name}}"
     dest: "{{ image_dest }}"
-  when: not manageiq_source_image.stat.exists and not manageiq_dest_image.stat.exists
+  when: not manageiq_dest_image.stat.exists
 
 - name: ManageIQ source image after download
   stat:
@@ -33,6 +33,9 @@
 
 - name: Rename ManageIQ Image extension
   command: mv "{{image_dest}}{{source_image_name}}" "{{image_dest}}{{destination_image_name}}"
-  when: manageiq_source_image.stat.exists
+  when: manageiq_source_image.stat.exists and not manageiq_dest_image.stat.exists
+
+- fail: msg="Image is not available.Please download the image manually at the destination path.."
+  when: not manageiq_dest_image.stat.exists
   
 

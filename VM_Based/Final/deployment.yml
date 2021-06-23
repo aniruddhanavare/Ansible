@@ -1,0 +1,15 @@
+- name: VM Based Deployment
+  hosts: localhost
+  tasks:
+    - debug:
+        msg: "Starting Deployment..."
+
+- import_playbook: infrastructure.yml
+
+- import_playbook: configuration.yml
+
+- name: VM Based Deployment
+  hosts: localhost
+  tasks:
+    - debug:
+        msg: "Deployment completed!!"

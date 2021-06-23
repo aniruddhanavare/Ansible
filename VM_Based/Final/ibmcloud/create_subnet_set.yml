@@ -18,10 +18,30 @@
     cacheable: True
     subnet: "{{ subnet_create_output.resource }}"
 
+- name: Add subnet {{ subnet.name }} dictionary
+  set_fact:
+    subnet_fact: {'name': "{{subnet.name}}",
+                  'id': "{{subnet.id}}",
+                  'ipv4_range': "{{subnet.ipv4_cidr_block}}",
+                  'zone': "{{subnet.zone}}",
+                  'type': "{{vm_type}}",
+                  'node': "{{vm_node}}" }
+
+- set_fact:
+    subnet_cidr_list: "{{subnet_fact.ipv4_range.split('/')}}"
+
+- set_fact:
+    new_subnet_address: "{{ subnet_cidr_list[0].split('.')[0] }}.{{ subnet_cidr_list[0].split('.')[1] }}.{{ 0 }}.{{ 0 }}"
+
+- name: Set VPC IP Range
+  set_fact:
+    cfme_vpc_ip_range: "{{ new_subnet_address}}/{{subnet_cidr_list[1] }}"
+
 - name: Add subnet {{ subnet.name }} to list
   set_fact:
     all_subnets: "{{ all_subnets|default([]) +
                        [{ 'name': subnet.name,
+                          'id': subnet.id,
                           'ipv4_range': subnet.ipv4_cidr_block,
                           'zone': subnet.zone,
                           'type': vm_type,

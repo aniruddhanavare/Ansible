@@ -60,6 +60,12 @@
     cacheable: True
     vmdb_fip: "{{ vmdb_fip_create_output.resource }}"
 
+- name: Set Encryption IP Address
+  set_fact:
+    cacheable: True
+    encryption_ipaddress: "{{ vmdb_vsi.primary_network_interface[0]['primary_ipv4_address'] }}"
+  when: vm_node == "master" and vm_type == "primary"
+
 - name: Create VMDB dictionary
   set_fact: 
     vmdbs: "{{ vmdbs | default({}) | combine ({ vm_name : vmdb_vsi.primary_network_interface[0]['primary_ipv4_address'] }) }}"
@@ -79,7 +85,8 @@
                           'primary_host_ip': vmdb_private_ipaddress,
                           'miq_region': miq_region,
                           'replication_type': vm_type,
-                          'miq_db_disk': miq_db_disk}] }}"
+                          'miq_db_disk': miq_db_disk,
+                          'node': vm_node}] }}"
   when: vm_node == "master" and vm_type == "primary"
 
 - name: Add Master Standby VMDB VM {{ vmdb_vsi.name }} to list
@@ -92,7 +99,8 @@
                           'primary_host_ip': vmdb_private_ipaddress,
                           'miq_region': miq_region,
                           'replication_type': vm_type,
-                          'miq_db_disk': miq_db_disk}] }}"
+                          'miq_db_disk': miq_db_disk,
+                          'node': vm_node}] }}"
   when: vm_node == "master" and vm_type == "standby"
 
 - name: Add VMDB VM {{ vmdb_vsi.name }} to list
@@ -105,7 +113,8 @@
                           'primary_host_ip': vmdb_private_ipaddress,
                           'miq_region': miq_region,
                           'replication_type': vm_type,
-                          'miq_db_disk': miq_db_disk}] }}"
+                          'miq_db_disk': miq_db_disk,
+                          'node': vm_node}] }}"
   when: vm_node != "master"
 
 - name: Configure {{ vm_type }} {{ vm_node }} UI VM in zone {{ vm_zone }}
@@ -174,6 +183,11 @@
                           'miq_appliance_hostname': ui_vsi.name,
                           'vmdb_private_ip': vmdb_private_ipaddress }] }}"
   when: vm_node != "master"
+
+- name: Create Load Balancer target address list
+  set_fact: 
+    load_balancer_vms: "{{ load_balancer_vms | default([]) + [ui_vsi.primary_network_interface[0]['primary_ipv4_address']] }}"
+  when: vm_node == "master"
 
 - include_tasks: worker_appliance.yml
   loop: "{{ range(0, worker_appliance_count|int)|list }}"
