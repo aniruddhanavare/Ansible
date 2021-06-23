@@ -35,6 +35,11 @@
   command: mv "{{image_dest}}{{source_image_name}}" "{{image_dest}}{{destination_image_name}}"
   when: manageiq_source_image.stat.exists and not manageiq_dest_image.stat.exists
 
+- name: ManageIQ dest image after rename
+  stat:
+    path: "{{image_dest}}{{destination_image_name}}"
+  register: manageiq_dest_image
+
 - fail: msg="Image is not available.Please download the image manually at the destination path.."
   when: not manageiq_dest_image.stat.exists
   
