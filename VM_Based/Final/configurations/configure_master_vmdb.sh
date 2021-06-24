@@ -46,13 +46,13 @@ echo `date` "Task : Disable database server : COMPLETE"
 
 
 # Update pg_hba_config
-echo `date` "Task: Update pg_hba_config : START"
+echo `date` "Task : Update pg_hba_config : START"
 PG_HBA_CONF_FILE=/var/lib/pgsql/data/pg_hba.conf
 ssl_string="host all all $miq_vpc_ip_range  md5"
 nossl_string="hostnossl all all $miq_vpc_ip_range md5"
 grep -qF -- "$ssl_string" "$PG_HBA_CONF_FILE" || echo "$ssl_string" >> "$PG_HBA_CONF_FILE"
 grep -qF -- "$nossl_string" "$PG_HBA_CONF_FILE" || echo "$nossl_string" >> "$PG_HBA_CONF_FILE"
-echo `date` "Task: Update pg_hba_config : COMPLETE"
+echo `date` "Task : Update pg_hba_config : COMPLETE"
 
 echo `date` "== MASTER VMDB [$miq_hostname] : Restarting... =="
 
