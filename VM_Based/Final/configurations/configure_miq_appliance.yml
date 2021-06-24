@@ -1,8 +1,8 @@
 - name: SCP and copy script to {{ item }}
-  command: scp  -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i /tmp/ssh_host_rsa_key {{ script_file_name }}  root@{{ item }}:/tmp
+  command: scp  -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i /tmp/{{ name_prefix }}-ssh_host_rsa_key {{ script_file_name }}  root@{{ item }}:/tmp
 
 - name: SSH and execute script on {{ item }}
-  command: ssh   -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i /tmp/ssh_host_rsa_key root@{{ item }} "sh /tmp/{{ script_file_name }} {{ args }}" >> /tmp/miq_conf_output.log 2>&1
+  command: ssh   -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i /tmp/{{ name_prefix }}-ssh_host_rsa_key root@{{ item }} "sh /tmp/{{ script_file_name }} {{ args }}" >> /tmp/miq_conf_output.log 2>&1
   #timeout: 1000000
   register: ssh_output
   ignore_errors: yes

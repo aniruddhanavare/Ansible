@@ -11,3 +11,8 @@
     ibmcloud_api_key: "{{ provider_apikey }}"
   register: authorization_policy_output
 
+- name: Save Authorization Policy as fact
+  set_fact:
+    cacheable: True
+    iam: "{{ authorization_policy_output.resource }}"
+

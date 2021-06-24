@@ -1,5 +1,5 @@
 - name: Appliance log file on {{ item }}
-  command: ssh   -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i  /tmp/ssh_host_rsa_key root@{{ item }}  "cat /tmp/miq_conf_output.log"
+  command: ssh   -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i  /tmp/{{ name_prefix }}-ssh_host_rsa_key root@{{ item }}  "cat /tmp/miq_conf_output.log"
   register: log_output
 
 - name: Printing the output 
