@@ -1,0 +1,7 @@
+---
+- name: Detach Authorization Policy
+  ibm_iam_authorization_policy_detach:
+    authorization_policy_id: "{{ iam.id }}"
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+

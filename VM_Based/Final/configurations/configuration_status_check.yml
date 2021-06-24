@@ -1,13 +1,7 @@
-- name: Appliance status check (log file) on {{ item }}
-  vars: 
-    vm_private_ip:  "{{ hostvars[item].private_ip }}"
-    host: (?i)root@{{ hostvars[item].miq_appliance_hostname }}
-  command: ssh   -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i  /tmp/ssh_host_rsa_key root@{{ item }}  "cat /tmp/miq_conf_output.log"
-  register: output
-  ignore_errors: yes
-  changed_when:
-  - '"Connection to {{ item }} closed by remote host." in output'
+- name: Appliance log file on {{ item }}
+  command: ssh   -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i  /tmp/{{ name_prefix }}-ssh_host_rsa_key root@{{ item }}  "cat /tmp/miq_conf_output.log"
+  register: log_output
 
 - name: Printing the output 
   debug : 
-    msg: '{{ output.stdout_lines }}'
+    msg: '{{ log_output.stdout_lines }}'

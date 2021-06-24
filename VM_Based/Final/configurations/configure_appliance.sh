@@ -47,6 +47,7 @@ function configure_miq_ui() {
 
   #reboot
   echo `date` "== UI APPLIANCE [$miq_hostname] : Restarting... =="
+  systemctl stop evmserverd
   reboot
 }
 

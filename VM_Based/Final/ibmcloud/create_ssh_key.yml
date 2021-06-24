@@ -1,14 +1,14 @@
 ---
 - name: Generate /etc/ssh/ RSA host key
-  command : ssh-keygen -t rsa -f /tmp/ssh_host_rsa_key -C "" -q -N ""
+  command : ssh-keygen -t rsa -f /tmp/{{ name_prefix }}-ssh_host_rsa_key -C "" -q -N ""
   args:
-    creates: /tmp/ssh_host_rsa_key
+    creates: /tmp/{{ name_prefix }}-ssh_host_rsa_key
   register: ssh_rsa_output   
 
-- name: Changing perm of "/tmp/ssh_host_rsa_key"
-  file: dest=/tmp/ssh_host_rsa_key mode=400
+- name: Changing perm of "/tmp/{{ name_prefix }}-ssh_host_rsa_key"
+  file: dest=/tmp/{{ name_prefix }}-ssh_host_rsa_key mode=400
 
-- command : cat /tmp/ssh_host_rsa_key.pub
+- command : cat /tmp/{{ name_prefix }}-ssh_host_rsa_key.pub
   register: ssh_public_key
 
 - block:
@@ -22,7 +22,7 @@
       ibmcloud_api_key: "{{ provider_apikey }}"
     register: ssh_key_create_output
   rescue:
-  - name: Get existing SSH key 
+  - name: Get existing SSH key
     ibm_is_ssh_key_info:
       name: "{{ name_prefix }}-ssh-key"
       region: "{{ region }}"

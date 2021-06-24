@@ -2,9 +2,21 @@
   vars_files:
       - vars/config_vars.yml
   tasks:
-    - name: Reset Default Password
+    - name: Reset Default Password for Master Primary VMDB
       include_tasks: reset-default-password.yml
-      loop: "{{ query('inventory_hostnames', 'all') }}"
+      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}"
+
+    - name: Reset Default Password for Master Primary Appliance
+      include_tasks: reset-default-password.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}"
+
+    - name: Reset Default Password for VMDBs
+      include_tasks: reset-default-password.yml
+      loop: "{{ query('inventory_hostnames', 'vmdb_appliance') }}"
+
+    - name: Reset Default Password for Appliances
+      include_tasks: reset-default-password.yml
+      loop: "{{ query('inventory_hostnames', 'appliance') }}"
 
     - name: Configure Master Primary VMDB
       include_tasks: configure_miq_appliance.yml
@@ -32,7 +44,7 @@
       include_tasks: configure_miq_appliance.yml
       vars:
         script_file_name: configure_replication.sh
-        args: "{{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }}"
+        args: "{{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }} {{ hostvars[item].primary_host_ip }}"
       loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
 
     - name: Configure Application Database Failover Monitor
@@ -41,7 +53,6 @@
         script_file_name: configure_appliance_failover.sh
         args: "{{ hostvars[item].miq_appliance_hostname }}"
       loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}" 
-
 
     - name: Configure VMDBs
       include_tasks: configure_miq_appliance.yml
@@ -69,7 +80,7 @@
       include_tasks: configure_miq_appliance.yml
       vars:
         script_file_name: configure_replication.sh
-        args: "{{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }} {{ hostvars[item].miq_db_disk }} {{ hostvars[item].primary_host_ip }}"
+        args: "{{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }} {{ hostvars[item].primary_host_ip }} {{ hostvars[item].miq_db_disk }}"
       loop: "{{ query('inventory_hostnames', 'vmdb_appliance') }}"
 
     - name: Configure Application Database Failover Monitor on Non DB Appliances
@@ -77,8 +88,23 @@
       vars:
         script_file_name: configure_appliance_failover.sh
         args: "{{ hostvars[item].miq_appliance_hostname }}"
-      loop: "{{ query('inventory_hostnames', 'appliance') }}" 
+      loop: "{{ query('inventory_hostnames', 'appliance') }}"
 
-    - name: Verify logs
+    - debug:
+        msg: Configuration Completed.Check logs
+
+    - name: Verify logs on Master Primary VMDB
       include_tasks: configuration_status_check.yml
-      loop: "{{ query('inventory_hostnames', 'all') }}"
+      loop: "{{ query('inventory_hostnames', 'master_primary_db') }}"
+
+    - name: Verify logs on Master Primary Appliance
+      include_tasks: configuration_status_check.yml
+      loop: "{{ query('inventory_hostnames', 'master_primary_appliance') }}"
+
+    - name: Verify logs on VMDBs
+      include_tasks: configuration_status_check.yml
+      loop: "{{ query('inventory_hostnames', 'vmdb_appliance') }}"
+
+    - name: Verify logs on Appliances
+      include_tasks: configuration_status_check.yml
+      loop: "{{ query('inventory_hostnames', 'appliance') }}"

@@ -76,3 +76,6 @@
       loop_control:
         loop_var: outer_item
 
+    - name: Delete Authorization
+      include_tasks: detach_authorization.yml
+
