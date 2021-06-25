@@ -1,12 +1,12 @@
 ---
 #vm credentials
 #cfme_ssh_user: root
-#cfme_default_root_pw: smartvm
-#cfme_new_root_pw: bWFuYWdlaXE=
+#cfme_default_root_pw:
+#cfme_new_root_pw: 
 
 #database credentials
 #cfme_db_user: root
-#cfme_db_pass: smartvm
+#cfme_db_pass:
 
 #vmdb default folder path
 cfme_vmdb_default_folder: /var/www/miq/vmdb

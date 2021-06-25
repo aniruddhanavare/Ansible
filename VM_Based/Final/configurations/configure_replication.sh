@@ -8,7 +8,7 @@ db_pass=$5
 miq_primary_host_ip=$6
 miq_db_disk=$7
 
-echo `date` "== CONFIGURE VMDB [$miq_hostname] REPLICATION: START =="
+echo `date` "== CONFIGURE VMDB [$miq_private_ip] REPLICATION: START =="
 
 replication_args=()
 replication_args+=( '--replication='$miq_replication_type )
@@ -28,9 +28,6 @@ then
     replication_args+=( '--standby-host='$miq_private_ip )
 fi
 replication_args+=( '--auto-failover' )
-
-echo echo `date` "Arguments for appliance_console_cli replication "
-echo  "${replication_args[@]}"
 
 appliance_console_cli "${replication_args[@]}" 
 echo `date` "Task: Configure database replication start : COMPLETE"
