@@ -1,19 +1,21 @@
-- name: SCP and copy script to {{ item }}
+- name: SCP and copy script {{ script_file_name }} to {{ item }}
   command: scp  -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i /tmp/{{ name_prefix }}-ssh_host_rsa_key {{ script_file_name }}  root@{{ item }}:/tmp
 
-- name: SSH and execute script on {{ item }}
+- name: SSH and execute script {{ script_file_name }} on {{ item }}
   command: ssh   -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null -i /tmp/{{ name_prefix }}-ssh_host_rsa_key root@{{ item }} "sh /tmp/{{ script_file_name }} {{ args }}" >> /tmp/miq_conf_output.log 2>&1
   #timeout: 1000000
   register: ssh_output
   ignore_errors: yes
   no_log: true
 
-- name: Error occured during script execution
+- name: Error occured during script {{ script_file_name }} execution
   vars:
     error_string:  Connection to {{ item }} closed by remote host.
   fail:
-    msg: "Script execution failed."
-  when: "error_string not in ssh_output.stderr"
+    msg: Script execution failed. {{ ssh_output.stderr_lines }}
+  when:
+    - "error_string not in ssh_output.stderr"
+    - "ssh_output.rc != 0"
 
 - name: Printing the output 
   debug : 
