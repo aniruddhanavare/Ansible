@@ -1,6 +1,7 @@
 ---
 - name: Create Authorization Policy
   ibm_iam_authorization_policy:
+    id: "{{ iam.id | default(omit) }}"
     source_service_name: "is"
     source_resource_type: "image"
     source_resource_instance_id: 

@@ -75,6 +75,8 @@
       loop: "{{ worker_sets|subelements('worker') }}"
       loop_control:
         loop_var: outer_item
+        index_var: index
+      when: index < no_of_worker_sets*2
 
     - name: Delete Authorization
       include_tasks: detach_authorization.yml
