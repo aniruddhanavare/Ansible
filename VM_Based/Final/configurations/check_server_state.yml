@@ -1,4 +1,4 @@
-- name: Waiting for server {{ item }} to start
+- name: Waiting for server {{ hostvars[item].miq_appliance_hostname }} to start
   wait_for:
     host: "{{ item }}"
     port: 22
