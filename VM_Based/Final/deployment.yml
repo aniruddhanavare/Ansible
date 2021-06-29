@@ -8,6 +8,9 @@
 
 - import_playbook: configuration.yml
 
+- import_playbook: ibmcloud/create_lb.yml
+  when: provider == "ibmcloud"
+
 - name: VM Based Deployment
   hosts: localhost
   tasks:
