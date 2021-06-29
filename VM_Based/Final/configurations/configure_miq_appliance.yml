@@ -6,8 +6,14 @@
   #timeout: 1000000
   register: ssh_output
   ignore_errors: yes
-  changed_when:
-  - '"Connection to {{ item }} closed by remote host." in ssh_output'
+  no_log: true
+
+- name: Error occured during script execution
+  vars:
+    error_string:  Connection to {{ item }} closed by remote host.
+  fail:
+    msg: "Script execution failed."
+  when: "error_string not in ssh_output.stderr"
 
 - name: Printing the output 
   debug : 

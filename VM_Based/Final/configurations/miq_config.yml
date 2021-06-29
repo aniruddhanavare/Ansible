@@ -44,7 +44,7 @@
       include_tasks: configure_miq_appliance.yml
       vars:
         script_file_name: configure_replication.sh
-        args: "{{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }} {{ hostvars[item].primary_host_ip }}"
+        args: "{{ hostvars[item].miq_appliance_hostname }}  {{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }} {{ hostvars[item].primary_host_ip }}"
       loop: "{{ query('inventory_hostnames', 'master_primary_db') }}" 
 
     - name: Configure Application Database Failover Monitor
@@ -80,7 +80,7 @@
       include_tasks: configure_miq_appliance.yml
       vars:
         script_file_name: configure_replication.sh
-        args: "{{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }} {{ hostvars[item].primary_host_ip }} {{ hostvars[item].miq_db_disk }}"
+        args: "{{ hostvars[item].miq_appliance_hostname }}  {{ hostvars[item].replication_type }}  {{ hostvars[item].private_ip }}  {{ hostvars[item].miq_cluster_node_number }}  {{ cfme_db_user }} {{ cfme_db_pass }} {{ hostvars[item].primary_host_ip }} {{ hostvars[item].miq_db_disk }}"
       loop: "{{ query('inventory_hostnames', 'vmdb_appliance') }}"
 
     - name: Configure Application Database Failover Monitor on Non DB Appliances

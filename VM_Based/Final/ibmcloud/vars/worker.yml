@@ -1,4 +1,5 @@
 ---
+#no_of_worker_sets: 
 worker_sets:
   - worker:
     - name: 11
@@ -25,3 +26,28 @@ worker_sets:
       miq_region: 1
       miq_db_disk: /dev/vdd
       primary_db: 11
+  - worker:
+    - name: 22
+      zone: "{{standby_zone}}"
+      worker_appliance_count: 1
+      type: primary
+      node: worker
+      volume_profile: general-purpose
+      volume_capacity: 100
+      volume_encryption_key: 
+      miq_cluster_node_number: 5
+      miq_region: 2
+      miq_db_disk: /dev/vdd
+      primary_db: 22
+    - name: 21
+      zone: "{{primary_zone}}"
+      worker_appliance_count: 1
+      type: standby
+      node: worker
+      volume_profile: general-purpose
+      volume_capacity: 100
+      volume_encryption_key: 
+      miq_cluster_node_number: 6
+      miq_region: 2
+      miq_db_disk: /dev/vdd
+      primary_db: 22

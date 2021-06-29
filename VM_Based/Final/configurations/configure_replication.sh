@@ -1,12 +1,12 @@
 #!/bin/bash
-
-miq_replication_type=$1
-miq_private_ip=$2
-miq_cluster_node_number=$3
-db_user=$4
-db_pass=$5
-miq_primary_host_ip=$6
-miq_db_disk=$7
+miq_hostname=$1
+miq_replication_type=$2
+miq_private_ip=$3
+miq_cluster_node_number=$4
+db_user=$5
+db_pass=$6
+miq_primary_host_ip=$7
+miq_db_disk=$8
 
 echo `date` "== CONFIGURE VMDB [$miq_hostname] REPLICATION: START =="
 
@@ -48,9 +48,6 @@ then
 fi
 replication_args+=( '--auto-failover' )
 
-echo echo `date` "Arguments for appliance_console_cli replication "
-echo  "${replication_args[@]}"
-
 appliance_console_cli "${replication_args[@]}" 
 echo `date` "Task: Configure database replication start : COMPLETE"
 
@@ -59,4 +56,4 @@ echo `date` "Task: Verify Database replication status : START"
 su - postgres -c "repmgr cluster show"
 echo `date` "Task: Verify Database replication status : COMPLETE"
 
-echo `date` "== CONFIGURE VMDB [$miq_private_ip] : COMPLETE =="
+echo `date` "== CONFIGURE VMDB [$miq_hostname] REPLICATION: COMPLETE =="
