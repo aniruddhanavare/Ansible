@@ -51,6 +51,7 @@
     name: "{{ name_prefix }}-{{ vm_node }}-vmdb-{{ vm_name }}-ip"
     state: available
     target: "{{ vmdb_vsi.primary_network_interface[0]['id'] }}"
+    resource_group: "{{ resource_group_id }}"
     region: "{{ region }}"
     ibmcloud_api_key: "{{ provider_apikey }}"
   register: vmdb_fip_create_output
@@ -148,6 +149,7 @@
     name: "{{ name_prefix }}-{{ vm_node }}-ui-{{ vm_name }}-ip"
     state: available
     target: "{{ ui_vsi.primary_network_interface[0]['id'] }}"
+    resource_group: "{{ resource_group_id }}"
     region: "{{ region }}"
     ibmcloud_api_key: "{{ provider_apikey }}"
   register: ui_fip_create_output

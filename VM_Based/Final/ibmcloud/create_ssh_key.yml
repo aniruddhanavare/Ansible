@@ -1,9 +1,12 @@
 ---
-- name: Generate /etc/ssh/ RSA host key
-  command : ssh-keygen -t rsa -f /tmp/{{ name_prefix }}-ssh_host_rsa_key -C "" -q -N ""
-  args:
-    creates: /tmp/{{ name_prefix }}-ssh_host_rsa_key
-  register: ssh_rsa_output   
+- name: generate SSH key "{{name_prefix}}-ssh_host_rsa_key"
+  openssh_keypair:
+    path: "/tmp/{{name_prefix}}-ssh_host_rsa_key"
+    type: rsa
+    size: 3072
+    state: present
+    force: no
+  register: ssh_rsa_output
 
 - name: Changing perm of "/tmp/{{ name_prefix }}-ssh_host_rsa_key"
   file: dest=/tmp/{{ name_prefix }}-ssh_host_rsa_key mode=400

@@ -30,6 +30,7 @@
     name: "{{ name_prefix }}-worker-{{ vm_name }}-{{ my_idx }}-ip"
     state: available
     target: "{{ worker_vsi.primary_network_interface[0]['id'] }}"
+    resource_group: "{{ resource_group_id }}"
     region: "{{ region }}"
     ibmcloud_api_key: "{{ provider_apikey }}"
   register: worker_fip_create_output

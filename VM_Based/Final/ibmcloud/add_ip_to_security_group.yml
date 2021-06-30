@@ -1,4 +1,11 @@
 ---
+- name: Update tags to security group
+  ibm_is_security_group:
+    id: "{{vpc.default_security_group}}"
+    tags: "{{ tag }}"
+    region: "{{ region }}"
+    ibmcloud_api_key: "{{ provider_apikey }}"
+
 - name: Configure Security Group Rule Inbound TCP IP {{ security_group_rule_ip_address }}
   ibm_is_security_group_rule:
     state: available
