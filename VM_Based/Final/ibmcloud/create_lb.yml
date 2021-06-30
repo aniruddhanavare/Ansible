@@ -1,0 +1,99 @@
+---
+- name: Create IBM Cloud Infrastructure
+  hosts: localhost
+  collections:
+   - ibm.cloudcollection
+  tasks:
+    - name: Fetch the variables from var file
+      include_vars:
+        dir: vars
+
+    - name: Set load balancer subnet list
+      set_fact:
+        load_balancer_subnets: []
+
+    - name: Set Load Balancer subnets
+      set_fact:
+        load_balancer_subnets: "{{ load_balancer_subnets }} + [ '{{ item.id }}' ]"
+      loop: "{{all_subnets}}"
+      when: item.node == "master"
+     
+    - name: Create Load balancer
+      ibm_is_lb:
+        name: "{{ name_prefix }}-load-balancer"
+        tags: "{{ tag }}"
+        subnets: "{{load_balancer_subnets}}"
+        resource_group: "{{ resource_group_id }}"
+        security_groups: "{{ vpc.default_security_group }}"
+        region: "{{ region }}"
+        ibmcloud_api_key: "{{ provider_apikey }}"
+      register: load_balancer_output
+
+    - name: Save Load balancer as fact
+      set_fact:
+        cacheable: True
+        lb: "{{ load_balancer_output.resource }}"
+
+    - name: Create Load balancer Pool
+      ibm_is_lb_pool:
+        name: "{{ name_prefix }}-load-balancer-pool"
+        lb: "{{lb.id}}"
+        algorithm: round_robin
+        protocol: tcp
+        proxy_protocol: disabled
+        session_persistence_type: source_ip
+        health_delay: 5
+        health_retries: 2
+        health_timeout: 2
+        health_type: https
+        health_monitor_url: /ping
+        health_monitor_port: 443
+        region: "{{ region }}"
+        ibmcloud_api_key: "{{ provider_apikey }}"
+      register: load_balancer_pool_output
+
+    - name: Save Load balancer pool as fact
+      set_fact:
+        cacheable: True
+        lb_pool: "{{ load_balancer_pool_output.resource }}"
+
+    - name: Create Load balancer Pool members
+      ibm_is_lb_pool_member:
+        lb: "{{lb.id}}"
+        pool: "{{lb_pool.id}}"
+        port: 443
+        target_address: "{{item}}"
+        region: "{{ region }}"
+        ibmcloud_api_key: "{{ provider_apikey }}"
+      register: load_balancer_pool_member_output
+      loop: "{{load_balancer_vms}}"
+
+    - name: Create Load balancer listener for TCP on port 80
+      ibm_is_lb_listener:
+        lb: "{{lb.id}}"
+        port: 80
+        protocol: tcp
+        default_pool: "{{lb_pool.id}}"
+        region: "{{ region }}"
+        ibmcloud_api_key: "{{ provider_apikey }}"
+      register: load_balancer_listener1_output
+
+    - name: Create Load balancer listener for TCP on port 443
+      ibm_is_lb_listener:
+        lb: "{{lb.id}}"
+        port: 443
+        protocol: tcp
+        default_pool: "{{lb_pool.id}}"
+        region: "{{ region }}"
+        ibmcloud_api_key: "{{ provider_apikey }}"
+      register: load_balancer_listener2_output
+
+    - name: Create Load balancer listener for TCP on port 8443
+      ibm_is_lb_listener:
+        lb: "{{lb.id}}"
+        port: 8443
+        protocol: tcp
+        default_pool: "{{lb_pool.id}}"
+        region: "{{ region }}"
+        ibmcloud_api_key: "{{ provider_apikey }}"
+      register: load_balancer_listener3_output
