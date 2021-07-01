@@ -5,6 +5,10 @@
     - debug:
         msg: "Starting Infrastructure creation..."
 
+    - name: Install ansible collection for IBM Cloud
+      command: ansible-galaxy collection install ibm.cloudcollection --force
+      when: provider == "ibmcloud"
+
 - import_playbook: ibmcloud/main.yml
   when: provider == "ibmcloud"
 
