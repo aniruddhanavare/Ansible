@@ -1,15 +1,16 @@
 ---
-provider_apikey:
-region:
-resource_group_name:
-tag: 
-object_storage_name:
-object_storage_location:
-object_storage_plan:
-bucket_storage_class:
-image_url:
-source_image_name:
-image_dest:
-custom_image_os:
-vsi_profile:
+#provider_apikey:
+#region: us-east
+#resource_group_name: manage-iq
+tag: "{{tglabel}}"
+#object_storage_name: Cloud Object Storage-manage-iq
+#object_storage_location: global
+#object_storage_plan: lite
+#bucket_storage_class: standard
+#image_url: https://releases.manageiq.org/
+#source_image_name: manageiq-openstack-kasparov-1.qcow2
+#image_dest: 
+#custom_image_os: red-7-amd64-byol
+#vsi_profile: bx2-2x8
+
 

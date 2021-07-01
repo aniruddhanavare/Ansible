@@ -2,6 +2,7 @@
 - name: Create IBM Cloud Infrastructure
   hosts: localhost
   vars_files:
+    - vars/main.yml
     - vars/master.yml
     - vars/worker.yml
   collections:
