@@ -1,0 +1,6 @@
+---
+- name: Check checkbox value
+  hosts: localhost
+  tasks:
+    - debug:
+        msg: "Load balancer {{lb_required}} is selected"
